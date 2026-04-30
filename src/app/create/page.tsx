@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Upload, X, Link as LinkIcon } from "lucide-react";
+import { apiClient } from "@/lib/apiClient";
+import { image } from "framer-motion/client";
 
 export default function CreatePromptPage() {
   const router = useRouter();
@@ -11,18 +13,16 @@ export default function CreatePromptPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
 
-  // Form State
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     promptText: "",
     price: "",
     imageUrl: "",
-    aiModel: "GPT-4o",
+    aiModel: "GPT4",
     category: "Development",
   });
 
-  // Auth Protection - Kick them out if not logged in
   useEffect(() => {
     const token = localStorage.getItem("promptforge_token");
     if (!token) {
@@ -30,7 +30,7 @@ export default function CreatePromptPage() {
     }
   }, [router]);
 
-  // Handle File Upload to Cloudinary
+  // Note: Cloudinary STILL uses standard fetch because it's an external file upload!
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -65,32 +65,21 @@ export default function CreatePromptPage() {
     setError("");
 
     try {
-      const token = localStorage.getItem("promptforge_token");
-      
-      const response = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/prompts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // Secure backend validation!
-        },
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          promptText: formData.promptText,
-          price: parseFloat(formData.price), // Ensure price is a number
-          aiModel: formData.aiModel,
-          category: formData.category,
-        }),
-      });
+      await apiClient.post("/api/prompts", {
+        title: formData.title,
+        description: formData.description,
+        promptText: formData.promptText,
+        price: parseFloat(formData.price), 
+        aiModel: formData.aiModel,
+        category: formData.category,
+        imageUrl: formData.imageUrl,
+      }, true); 
 
-      if (!response.ok) {
-        throw new Error("Failed to publish prompt");
-      }
-
-      // Success! Send them to the marketplace to see their new listing
+      // Success! Send them to the marketplace
       router.push("/explore");
 
     } catch (err: any) {
+      // apiClient already extracts the error message for us
       setError(err.message || "An error occurred");
       setIsSubmitting(false);
     }
@@ -199,7 +188,7 @@ export default function CreatePromptPage() {
                 onChange={handleChange}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none"
               >
-                <option value="GPT-4o">GPT-4o</option>
+                <option value="GPT4">GPT-4o</option>
                 <option value="Claude 3.5 Sonnet">Claude 3.5 Sonnet</option>
                 <option value="Midjourney v6">Midjourney v6</option>
                 <option value="Gemini 1.5 Pro">Gemini 1.5 Pro</option>

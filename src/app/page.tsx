@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../lib/firebase";
 import { motion } from "framer-motion";
+import { apiClient } from "@/lib/apiClient";
 
 // Import our components
 import HeroSection from "@/components/home/HeroSection";
@@ -25,17 +26,11 @@ export default function Home() {
 
     const fetchPrompts = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-        const res = await fetch(`${API_URL}/api/prompts?limit=6`);
-        if (res.ok) {
-          const data = await res.json();
-          // Safely extract the array whether using the old or new backend
-          const promptsArray = Array.isArray(data) ? data : (data.prompts || []);
-
-          // FORCING 6 CARDS HERE
-          setFeaturedPrompts(promptsArray.slice(0, 6));
-        }
+        const data = await apiClient.get("/api/prompts?limit=6");
+        
+        const promptsArray = Array.isArray(data) ? data : (data.prompts || []);
+        
+        setFeaturedPrompts(promptsArray.slice(0, 6));
       } catch (error) {
         console.error("Failed to fetch featured prompts:", error);
       } finally {
@@ -46,18 +41,23 @@ export default function Home() {
   }, []);
 
   const handleGoogleLogin = async () => {
-    // ... your existing login logic ...
     try {
       setIsLoggingIn(true);
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      const response = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/auth/sync", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      
+      const response = await fetch(`${API_URL}/api/auth/sync`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${idToken}` 
+        },
       });
 
       const data = await response.json();
+      
       if (response.ok) {
         localStorage.setItem("promptforge_token", data.token);
         localStorage.setItem("promptforge_user", JSON.stringify(data.user));
@@ -73,10 +73,8 @@ export default function Home() {
   };
 
   return (
-    // FIX: Removed overflow-x-hidden from this main wrapper!
     <div className="relative min-h-screen bg-slate-950 text-slate-50 font-sans pb-24">
-
-      {/* FIX: Isolated the glowing blobs in their own overflow-hidden container */}
+      {/* Background Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div animate={{ scale: [1, 1.05, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[120px]" />
         <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute top-[5%] right-0 w-[400px] h-[400px] bg-purple-600 rounded-full blur-[100px]" />

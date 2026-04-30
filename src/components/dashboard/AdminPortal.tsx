@@ -3,41 +3,39 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, XCircle, Clock, Eye } from "lucide-react";
+import { apiClient } from "@/lib/apiClient";
 
 export default function AdminPortal() {
   const [pendingPrompts, setPendingPrompts] = useState<any[]>([]);
   const [selectedPrompt, setSelectedPrompt] = useState<any | null>(null);
 
+  // 🧹 We no longer need the manual API_URL variable here!
+
   useEffect(() => {
     const fetchPending = async () => {
-      const token = localStorage.getItem("promptforge_token");
       try {
-        const res = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/prompts/admin/pending", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (res.ok) setPendingPrompts(await res.json());
-      } catch (err) { console.error(err); }
+        // ✨ A single, clean GET request. 
+        // The 'true' tells the client to automatically grab and attach the token.
+        const data = await apiClient.get("/api/prompts/admin/pending", true);
+        setPendingPrompts(data);
+      } catch (err) { 
+        console.error("Failed to load pending queue:", err); 
+      }
     };
     fetchPending();
   }, []);
 
   const handleStatusChange = async (id: string, newStatus: string) => {
-    const token = localStorage.getItem("promptforge_token");
     try {
-      const res = await fetch(`http://process.env.NEXT_PUBLIC_API_URL/api/prompts/admin/status/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
+      // ✨ A single, clean PATCH request.
+      await apiClient.patch(`/api/prompts/admin/status/${id}`, { status: newStatus }, true);
 
-      if (res.ok) {
-        setPendingPrompts(prev => prev.filter(p => p.id !== id));
-        setSelectedPrompt(null);
-      }
-    } catch (err) { console.error(err); }
+      // If it succeeds, update the UI
+      setPendingPrompts(prev => prev.filter(p => p.id !== id));
+      setSelectedPrompt(null);
+    } catch (err) { 
+      console.error("Failed to update prompt status:", err); 
+    }
   };
 
   return (
@@ -51,15 +49,15 @@ export default function AdminPortal() {
         {/* LEFT COL: The Queue */}
         <div className="lg:col-span-1 space-y-4">
           <h2 className="text-lg font-bold text-slate-300 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-orange-400"/> Needs Review ({pendingPrompts.length})
+            <Clock className="w-5 h-5 text-orange-400" /> Needs Review ({pendingPrompts.length})
           </h2>
-          
+
           {pendingPrompts.length === 0 ? (
             <div className="p-6 text-center border border-dashed border-slate-800 rounded-xl text-slate-500">Inbox Zero! No pending prompts.</div>
           ) : (
             pendingPrompts.map(prompt => (
-              <div 
-                key={prompt.id} 
+              <div
+                key={prompt.id}
                 onClick={() => setSelectedPrompt(prompt)}
                 className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedPrompt?.id === prompt.id ? 'bg-blue-600/10 border-blue-500' : 'bg-slate-900/50 border-slate-800 hover:border-slate-600'}`}
               >
@@ -87,10 +85,11 @@ export default function AdminPortal() {
                   <h3 className="text-xs font-bold uppercase text-slate-500 mb-2">Public Description</h3>
                   <p className="text-sm text-slate-300 bg-slate-950 p-4 rounded-lg border border-slate-800 leading-relaxed">{selectedPrompt.description}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-xs font-bold uppercase text-emerald-500 mb-2 flex items-center gap-2"><Eye className="w-4 h-4" /> Secret Prompt Content</h3>
-                  <p className="text-sm text-emerald-100 bg-emerald-950/30 p-4 rounded-lg border border-emerald-900/50 font-mono leading-relaxed whitespace-pre-wrap">{selectedPrompt.promptContent}</p>
+                  {/* ✅ The promptText fix is intact here! */}
+                  <p className="text-sm text-emerald-100 bg-emerald-950/30 p-4 rounded-lg border border-emerald-900/50 font-mono leading-relaxed whitespace-pre-wrap">{selectedPrompt.promptText}</p>
                 </div>
               </div>
 

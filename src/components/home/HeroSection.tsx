@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
 
 interface HeroProps {
   user: any;
@@ -26,18 +25,39 @@ export default function HeroSection({ user, isAuthLoaded, onLogin, isLoggingIn }
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-center max-w-3xl mb-24 space-y-8">
-      <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
-        <Zap className="w-4 h-4 text-blue-400 fill-blue-400" />
-        Marketplace Live
+
+      <motion.div variants={itemVariants} className="relative inline-flex items-center justify-center">
+        {/* Professional Asymmetric Pulse (Expand -> Wait -> Fast Snap) - Blue Theme */}
+        <motion.div
+          animate={{
+            scale: [1, 1.03, 1.03, 1],
+            boxShadow: [
+              "0 0 0px rgba(59, 130, 246, 0)",       // State 1: Start invisible
+              "0 0 20px rgba(59, 130, 246, 0.6)",    // State 2: Outward pulse reaches peak
+              "0 0 15px rgba(59, 130, 246, 0.3)",    // State 3: The Wait (glow softens slightly)
+              "0 0 0px rgba(59, 130, 246, 0)"        // State 4: Fast inward snap
+            ]
+          }}
+          transition={{
+            duration: 2.2,
+            repeat: Infinity,
+            ease: "easeInOut",
+            // The secret to professional UI pacing:
+            times: [0, 0.4, 0.85, 1]
+          }}
+          className="relative inline-flex items-center px-5 py-1.5 rounded-full bg-slate-900 border border-blue-500/50 text-blue-400 text-sm font-bold backdrop-blur-md"
+        >
+          Marketplace Live
+        </motion.div>
       </motion.div>
-      
+
       <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-extrabold tracking-tight">
         Master the <br className="hidden md:block" />
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
           Machine Whisper.
         </span>
       </motion.h1>
-      
+
       <motion.p variants={itemVariants} className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-light">
         The premium marketplace for discovering, buying, and selling highly-engineered AI prompts for GPT-4, Claude, and Midjourney.
       </motion.p>
@@ -46,7 +66,7 @@ export default function HeroSection({ user, isAuthLoaded, onLogin, isLoggingIn }
         {!isAuthLoaded ? (
           <div className="w-8 h-8 border-2 border-slate-700 border-t-transparent rounded-full animate-spin"></div>
         ) : user ? (
-          <button 
+          <button
             onClick={() => router.push("/explore")}
             className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-[0_0_40px_-10px_rgba(37,99,235,0.4)] hover:bg-blue-500 hover:scale-105 hover:shadow-[0_0_60px_-15px_rgba(37,99,235,0.6)] transition-all duration-300"
           >
@@ -56,7 +76,7 @@ export default function HeroSection({ user, isAuthLoaded, onLogin, isLoggingIn }
             </svg>
           </button>
         ) : (
-          <button 
+          <button
             onClick={onLogin}
             disabled={isLoggingIn}
             className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-slate-900 font-bold rounded-xl shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:scale-105 hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.5)] transition-all duration-300 disabled:opacity-70 disabled:hover:scale-100"

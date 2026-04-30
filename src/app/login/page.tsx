@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -39,7 +40,10 @@ export default function LoginPage() {
       const idToken = await userCredential.user.getIdToken();
 
       // 3. Sync with Backend to get your custom JWT
-      const response = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/auth/sync", {
+
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+      const response = await fetch(`${API_URL}/api/auth/sync`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +60,7 @@ export default function LoginPage() {
       // 4. Store backend token and redirect
       localStorage.setItem("promptforge_token", data.token);
       localStorage.setItem("promptforge_user", JSON.stringify(data.user));
-      
+
       router.push("/explore");
     } catch (err: any) {
       const message = err.message.replace("Firebase: ", "").replace(/\(auth.*\)\.?/, "");
@@ -69,7 +73,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none" />
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-slate-900/50 border border-slate-800 rounded-3xl p-8 backdrop-blur-xl relative z-10 shadow-2xl"
@@ -90,7 +94,7 @@ export default function LoginPage() {
             <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email Address</label>
             <div className="relative">
               <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
-              <input 
+              <input
                 required type="email" name="email" value={formData.email} onChange={handleChange}
                 className="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-12 pr-4 py-3.5 text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
                 placeholder="name@example.com"
@@ -101,19 +105,30 @@ export default function LoginPage() {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Password</label>
-              <a href="#" className="text-xs text-blue-400 hover:text-blue-300">Forgot?</a>
+              <Link href="/forgot-password" className="text-xs text-blue-400 hover:text-blue-300">Forgot?</Link>
             </div>
             <div className="relative">
               <Lock className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
-              <input 
-                required type="password" name="password" value={formData.password} onChange={handleChange}
-                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-12 pr-4 py-3.5 text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-12 pr-12 py-3.5 text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-3.5 text-slate-500 hover:text-slate-300 transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
           </div>
 
-          <button 
+          <button
             type="submit" disabled={isSubmitting}
             className="w-full py-4 mt-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >

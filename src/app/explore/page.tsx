@@ -14,6 +14,7 @@ interface Prompt {
   category: string;
   imageUrl?: string; // <-- Added this field
   seller: { name: string };
+  status: string;
 }
 
 export default function ExplorePage() {
@@ -40,7 +41,10 @@ export default function ExplorePage() {
 
     const fetchPrompts = async () => {
       try {
-        const res = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/prompts");
+
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+        const res = await fetch(`${API_URL}/api/prompts`);
         if (res.ok) {
           const data = await res.json();
           // Adjust based on your backend response format (whether it's data or data.prompts)

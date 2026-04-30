@@ -14,7 +14,7 @@ export default function Home() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
-  
+
   const [featuredPrompts, setFeaturedPrompts] = useState<any[]>([]);
   const [isLoadingPrompts, setIsLoadingPrompts] = useState(true);
 
@@ -25,12 +25,14 @@ export default function Home() {
 
     const fetchPrompts = async () => {
       try {
-        const res = await fetch("http://NEXT_PUBLIC_API_URL/api/prompts?limit=6");
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+        const res = await fetch(`${API_URL}/api/prompts?limit=6`);
         if (res.ok) {
           const data = await res.json();
           // Safely extract the array whether using the old or new backend
           const promptsArray = Array.isArray(data) ? data : (data.prompts || []);
-          
+
           // FORCING 6 CARDS HERE
           setFeaturedPrompts(promptsArray.slice(0, 6));
         }
@@ -50,7 +52,7 @@ export default function Home() {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      const response = await fetch("http://NEXT_PUBLIC_API_URL/api/auth/sync", {
+      const response = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/auth/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
       });
@@ -73,7 +75,7 @@ export default function Home() {
   return (
     // FIX: Removed overflow-x-hidden from this main wrapper!
     <div className="relative min-h-screen bg-slate-950 text-slate-50 font-sans pb-24">
-      
+
       {/* FIX: Isolated the glowing blobs in their own overflow-hidden container */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div animate={{ scale: [1, 1.05, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[120px]" />

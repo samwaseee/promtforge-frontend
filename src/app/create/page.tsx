@@ -67,7 +67,7 @@ export default function CreatePromptPage() {
     try {
       const token = localStorage.getItem("promptforge_token");
       
-      const response = await fetch("http://NEXT_PUBLIC_API_URL/api/prompts", {
+      const response = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/prompts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

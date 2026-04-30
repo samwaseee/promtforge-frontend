@@ -12,7 +12,7 @@ export default function AdminPortal() {
     const fetchPending = async () => {
       const token = localStorage.getItem("promptforge_token");
       try {
-        const res = await fetch("http://NEXT_PUBLIC_API_URL/api/prompts/admin/pending", {
+        const res = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/prompts/admin/pending", {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (res.ok) setPendingPrompts(await res.json());
@@ -24,7 +24,7 @@ export default function AdminPortal() {
   const handleStatusChange = async (id: string, newStatus: string) => {
     const token = localStorage.getItem("promptforge_token");
     try {
-      const res = await fetch(`http://NEXT_PUBLIC_API_URL/api/prompts/admin/status/${id}`, {
+      const res = await fetch(`http://process.env.NEXT_PUBLIC_API_URL/api/prompts/admin/status/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

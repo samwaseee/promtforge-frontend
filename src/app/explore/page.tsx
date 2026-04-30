@@ -40,7 +40,7 @@ export default function ExplorePage() {
 
     const fetchPrompts = async () => {
       try {
-        const res = await fetch("http://NEXT_PUBLIC_API_URL/api/prompts");
+        const res = await fetch("http://process.env.NEXT_PUBLIC_API_URL/api/prompts");
         if (res.ok) {
           const data = await res.json();
           // Adjust based on your backend response format (whether it's data or data.prompts)

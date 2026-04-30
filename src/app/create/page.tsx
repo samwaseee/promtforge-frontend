@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { Upload, X, Link as LinkIcon } from "lucide-react";
 
 export default function CreatePromptPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
 
   // Form State
@@ -15,6 +17,7 @@ export default function CreatePromptPage() {
     description: "",
     promptText: "",
     price: "",
+    imageUrl: "",
     aiModel: "GPT-4o",
     category: "Development",
   });
@@ -26,6 +29,31 @@ export default function CreatePromptPage() {
       router.push("/");
     }
   }, [router]);
+
+  // Handle File Upload to Cloudinary
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "promptforge"); 
+    data.append("cloud_name", "danp5ejbu");
+
+    try {
+      const res = await fetch("https://api.cloudinary.com/v1_1/danp5ejbu/image/upload", {
+        method: "POST",
+        body: data,
+      });
+      const fileData = await res.json();
+      setFormData({ ...formData, imageUrl: fileData.secure_url });
+    } catch (err) {
+      setError("Image upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -88,6 +116,49 @@ export default function CreatePromptPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-slate-900/50 p-8 rounded-2xl border border-slate-800 backdrop-blur-sm">
+          
+          {/* IMAGE UPLOAD SECTION */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-300">Prompt Image</label>
+            
+            {/* Preview Box */}
+            {formData.imageUrl ? (
+              <div className="relative h-40 w-full rounded-lg overflow-hidden border border-slate-700">
+                <img src={formData.imageUrl} alt="Preview" className="h-full w-full object-cover" />
+                <button 
+                  type="button"
+                  onClick={() => setFormData({...formData, imageUrl: ""})}
+                  className="absolute top-2 right-2 p-1 bg-black/50 rounded-full text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                {/* Upload Button */}
+                <label className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-700 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-slate-900 transition-all">
+                  {isUploading ? <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full" /> : <Upload className="w-6 h-6 text-slate-500 mb-2" />}
+                  <span className="text-xs text-slate-500">Upload Image</span>
+                  <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                </label>
+
+                {/* URL Paste */}
+                <div className="flex flex-col justify-center h-40 p-4 border border-slate-700 rounded-lg bg-slate-950">
+                  <div className="flex items-center gap-2 mb-2 text-slate-500">
+                    <LinkIcon className="w-4 h-4" />
+                    <span className="text-xs">Paste URL</span>
+                  </div>
+                  <input 
+                    name="imageUrl"
+                    value={formData.imageUrl}
+                    onChange={handleChange}
+                    className="w-full bg-transparent border-b border-slate-700 focus:outline-none focus:border-blue-500 py-1 text-sm"
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+            )}
+          </div>
           
           {/* TITLE & PRICE ROW */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

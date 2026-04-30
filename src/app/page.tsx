@@ -5,7 +5,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../lib/firebase";
 import { motion } from "framer-motion";
 
-// Import our new components
+// Import our components
 import HeroSection from "@/components/home/HeroSection";
 import TrendingCategories from "@/components/home/TrendingCategories";
 import FeaturedPrompts from "@/components/home/FeaturedPrompts";
@@ -25,10 +25,14 @@ export default function Home() {
 
     const fetchPrompts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/prompts");
+        const res = await fetch("http://localhost:5000/api/prompts?limit=6");
         if (res.ok) {
           const data = await res.json();
-          setFeaturedPrompts(data.slice(0, 3));
+          // Safely extract the array whether using the old or new backend
+          const promptsArray = Array.isArray(data) ? data : (data.prompts || []);
+          
+          // FORCING 6 CARDS HERE
+          setFeaturedPrompts(promptsArray.slice(0, 6));
         }
       } catch (error) {
         console.error("Failed to fetch featured prompts:", error);
@@ -40,6 +44,7 @@ export default function Home() {
   }, []);
 
   const handleGoogleLogin = async () => {
+    // ... your existing login logic ...
     try {
       setIsLoggingIn(true);
       const result = await signInWithPopup(auth, googleProvider);
@@ -66,10 +71,14 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-slate-50 overflow-x-hidden font-sans pb-24">
-      {/* Background Ambient Glows */}
-      <motion.div animate={{ scale: [1, 1.05, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[120px] pointer-events-none" />
-      <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute top-[5%] right-0 w-[400px] h-[400px] bg-purple-600 rounded-full blur-[100px] pointer-events-none" />
+    // FIX: Removed overflow-x-hidden from this main wrapper!
+    <div className="relative min-h-screen bg-slate-950 text-slate-50 font-sans pb-24">
+      
+      {/* FIX: Isolated the glowing blobs in their own overflow-hidden container */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div animate={{ scale: [1, 1.05, 1], opacity: [0.15, 0.25, 0.15] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600 rounded-full blur-[120px]" />
+        <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute top-[5%] right-0 w-[400px] h-[400px] bg-purple-600 rounded-full blur-[100px]" />
+      </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 md:pt-32 flex flex-col items-center">
         <HeroSection user={user} isAuthLoaded={isAuthLoaded} onLogin={handleGoogleLogin} isLoggingIn={isLoggingIn} />

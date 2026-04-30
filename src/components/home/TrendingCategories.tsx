@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Code, MessageSquare, Paintbrush, LineChart, TrendingUp } from "lucide-react";
 
@@ -12,6 +13,13 @@ const CATEGORIES = [
 ];
 
 export default function TrendingCategories() {
+  const router = useRouter();
+
+  const handleCategoryClick = (categoryName: string) => {
+    // encodeURIComponent ensures spaces (like "Data Analysis") don't break the URL
+    router.push(`/explore?category=${encodeURIComponent(categoryName)}`);
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }}
@@ -29,6 +37,7 @@ export default function TrendingCategories() {
         {CATEGORIES.map((cat, idx) => (
           <motion.button 
             key={idx}
+            onClick={() => handleCategoryClick(cat.name)}
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center gap-2 px-6 py-3 bg-slate-900/50 border border-slate-800 rounded-full hover:bg-slate-800 hover:border-slate-600 transition-colors backdrop-blur-sm"

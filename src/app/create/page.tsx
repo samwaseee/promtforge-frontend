@@ -1,0 +1,201 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+
+export default function CreatePromptPage() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  // Form State
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    promptText: "",
+    price: "",
+    aiModel: "GPT-4o",
+    category: "Development",
+  });
+
+  // Auth Protection - Kick them out if not logged in
+  useEffect(() => {
+    const token = localStorage.getItem("promptforge_token");
+    if (!token) {
+      router.push("/");
+    }
+  }, [router]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("promptforge_token");
+      
+      const response = await fetch("http://localhost:5000/api/prompts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` // Secure backend validation!
+        },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          promptText: formData.promptText,
+          price: parseFloat(formData.price), // Ensure price is a number
+          aiModel: formData.aiModel,
+          category: formData.category,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to publish prompt");
+      }
+
+      // Success! Send them to the marketplace to see their new listing
+      router.push("/explore");
+
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-50 py-12 px-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-2xl mx-auto"
+      >
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Sell a Prompt</h1>
+          <p className="text-slate-400">Package your best AI systems and share them with the world.</p>
+        </div>
+
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-4 rounded-xl mb-6 text-sm">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6 bg-slate-900/50 p-8 rounded-2xl border border-slate-800 backdrop-blur-sm">
+          
+          {/* TITLE & PRICE ROW */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="md:col-span-3 space-y-2">
+              <label className="text-sm font-medium text-slate-300">Prompt Title</label>
+              <input 
+                required
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="e.g., Ultimate React Component Architect"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-300">Price ($)</label>
+              <input 
+                required
+                type="number"
+                step="0.01"
+                min="0.99"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="4.99"
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600"
+              />
+            </div>
+          </div>
+
+          {/* MODEL & CATEGORY ROW */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-300">AI Model</label>
+              <select 
+                name="aiModel"
+                value={formData.aiModel}
+                onChange={handleChange}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none"
+              >
+                <option value="GPT-4o">GPT-4o</option>
+                <option value="Claude 3.5 Sonnet">Claude 3.5 Sonnet</option>
+                <option value="Midjourney v6">Midjourney v6</option>
+                <option value="Gemini 1.5 Pro">Gemini 1.5 Pro</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-300">Category</label>
+              <select 
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all appearance-none"
+              >
+                <option value="Development">Development</option>
+                <option value="Copywriting">Copywriting</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Data Analysis">Data Analysis</option>
+                <option value="Art & Design">Art & Design</option>
+              </select>
+            </div>
+          </div>
+
+          {/* DESCRIPTION */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-300">Description (Public)</label>
+            <textarea 
+              required
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={3}
+              placeholder="Explain what this prompt does and why it is valuable. Buyers will see this."
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none placeholder:text-slate-600"
+            />
+          </div>
+
+          {/* THE SECRET PROMPT */}
+          <div className="space-y-2 relative">
+            <label className="text-sm font-medium text-blue-400 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              Actual Prompt (Hidden until purchased)
+            </label>
+            <textarea 
+              required
+              name="promptText"
+              value={formData.promptText}
+              onChange={handleChange}
+              rows={6}
+              placeholder="Paste the exact prompt text here. E.g., 'Act as a Senior Developer...'"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none font-mono text-sm placeholder:text-slate-600 placeholder:font-sans"
+            />
+          </div>
+
+          {/* SUBMIT BUTTON */}
+          <button 
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-[0_0_30px_-10px_rgba(37,99,235,0.4)] transition-all flex items-center justify-center disabled:opacity-70"
+          >
+            {isSubmitting ? (
+               <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              "Publish Prompt"
+            )}
+          </button>
+        </form>
+      </motion.div>
+    </div>
+  );
+}

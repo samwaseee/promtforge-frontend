@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Star, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ArrowRight, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 
 interface FeaturedPromptsProps {
   prompts: any[];
@@ -108,7 +108,7 @@ export default function FeaturedPrompts({ prompts, isLoading }: FeaturedPromptsP
                     x: offset * 180,              // Spread them horizontally
                     scale: 1 - absOffset * 0.15,   // Make background cards smaller
                     zIndex: 10 - absOffset,       // Center card is always on top
-                    rotateY: offset * -25,        // Tilt them inward like a wheel
+                    rotateY: offset * -15,        // Tilt them inward like a wheel
                     opacity: 1 - absOffset * 0.15,// Fade out distant cards
                     filter: absOffset > 0 ? `blur(${absOffset * 3}px)` : "blur(0px)", // The Glass Blur Effect
                   }}
@@ -126,13 +126,29 @@ export default function FeaturedPrompts({ prompts, isLoading }: FeaturedPromptsP
                     }
                   } : {})}
                   // Absolute positioning stacks them all perfectly in the center initially
-                  className={`absolute top-0 left-0 w-full h-full bg-slate-900/60 border border-slate-700 rounded-3xl p-6 shadow-2xl backdrop-blur-xl flex flex-col justify-between group ${isActive ? 'cursor-grab active:cursor-grabbing hover:border-blue-500/50 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.4)]' : 'cursor-pointer'}`}
+                  className={`absolute top-0 left-0 w-full h-full bg-slate-900/60 border border-slate-700 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col justify-between group ${isActive ? 'cursor-grab active:cursor-grabbing hover:border-blue-500/50 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.4)]' : 'cursor-pointer'}`}
                 >
                   {/* Subtle top gradient line that only appears on the active card hover */}
                   <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/50 to-purple-500/0 transition-opacity ${isActive ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'}`}></div>
 
                   <div>
-                    <div className="flex justify-between items-start mb-4">
+                    {/* THE IMAGE BLOCK */}
+                    <div className="w-full h-32 md:h-36 mb-4 overflow-hidden rounded-xl bg-slate-950/50 border border-slate-800/50 relative pointer-events-none">
+                      {prompt.imageUrl ? (
+                        <img 
+                          src={prompt.imageUrl} 
+                          alt={prompt.title} 
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-700 bg-slate-900/50">
+                          <ImageIcon className="w-8 h-8 mb-2 opacity-30" />
+                          <span className="text-[10px] font-semibold uppercase tracking-wider opacity-30">No Preview</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between items-start mb-3">
                       <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-slate-800 text-slate-300 rounded border border-slate-700">
                         {prompt.aiModel}
                       </span>
@@ -141,21 +157,22 @@ export default function FeaturedPrompts({ prompts, isLoading }: FeaturedPromptsP
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-slate-100 leading-snug mb-3 line-clamp-2">
+                    <h3 className="text-lg md:text-xl font-bold text-slate-100 leading-snug mb-2 line-clamp-1 group-hover:text-blue-400 transition-colors">
                       {prompt.title}
                     </h3>
                     
-                    <p className="text-slate-400 text-sm font-light line-clamp-4 mb-4">
+                    {/* Reduced to line-clamp-2 to accommodate the new image height */}
+                    <p className="text-slate-400 text-sm font-light line-clamp-2 mb-2">
                       {prompt.description}
                     </p>
                   </div>
                   
-                  <div className="flex justify-between items-end pt-4 mt-auto border-t border-slate-800/50">
+                  <div className="flex justify-between items-end pt-3 mt-auto border-t border-slate-800/50">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-300 border border-slate-700">
                         {prompt.seller?.name ? prompt.seller.name.charAt(0).toUpperCase() : "U"}
                       </div>
-                      <span className="text-sm text-slate-400 truncate max-w-[100px]">
+                      <span className="text-sm text-slate-400 truncate max-w-[90px]">
                         {prompt.seller?.name || "Unknown"}
                       </span>
                     </div>

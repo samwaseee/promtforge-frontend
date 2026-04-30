@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Image as ImageIcon } from "lucide-react";
 
 interface Prompt {
   id: string;
@@ -12,6 +12,7 @@ interface Prompt {
   price: number;
   aiModel: string;
   category: string;
+  imageUrl?: string; // <-- Added this field
   seller: { name: string };
 }
 
@@ -42,7 +43,8 @@ export default function ExplorePage() {
         const res = await fetch("http://localhost:5000/api/prompts");
         if (res.ok) {
           const data = await res.json();
-          setPrompts(data);
+          // Adjust based on your backend response format (whether it's data or data.prompts)
+          setPrompts(data.prompts || data);
         }
       } catch (error) { console.error("Failed to fetch prompts:", error); }
       finally { setIsLoading(false); }
@@ -103,6 +105,23 @@ export default function ExplorePage() {
                 className="group relative bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md transition-all hover:bg-slate-800/60 hover:border-blue-500/50 hover:shadow-[0_0_30px_-10px_rgba(59,130,246,0.2)] cursor-pointer flex flex-col justify-between"
               >
                 <div>
+                  
+                  {/* THE IMAGE BLOCK */}
+                  <div className="w-full h-48 mb-5 overflow-hidden rounded-xl bg-slate-950/50 border border-slate-800/50 relative">
+                    {prompt.imageUrl ? (
+                      <img 
+                        src={prompt.imageUrl} 
+                        alt={prompt.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-700 bg-slate-900/50">
+                        <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
+                        <span className="text-xs font-semibold uppercase tracking-wider opacity-50">No Preview</span>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[10px] font-bold uppercase px-2.5 py-1 bg-slate-800 text-slate-300 rounded-md border border-slate-700">
                       {prompt.category}

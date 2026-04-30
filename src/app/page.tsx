@@ -25,7 +25,7 @@ export default function Home() {
 
     const fetchPrompts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/prompts?limit=6");
+        const res = await fetch("http://NEXT_PUBLIC_API_URL/api/prompts?limit=6");
         if (res.ok) {
           const data = await res.json();
           // Safely extract the array whether using the old or new backend
@@ -50,7 +50,7 @@ export default function Home() {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      const response = await fetch("http://localhost:5000/api/auth/sync", {
+      const response = await fetch("http://NEXT_PUBLIC_API_URL/api/auth/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
       });

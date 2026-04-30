@@ -16,7 +16,7 @@ export default function SellerDashboard() {
 
     const fetchMyPrompts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/prompts/seller/me", {
+        const res = await fetch("http://NEXT_PUBLIC_API_URL/api/prompts/seller/me", {
           headers: {
             "Authorization": `Bearer ${token}`
           }

@@ -77,7 +77,7 @@ export default function RegisterPage() {
             const idToken = await userCredential.user.getIdToken();
 
             // 4. Sync with Backend
-            const response = await fetch("http://localhost:5000/api/auth/sync", {
+            const response = await fetch("http://NEXT_PUBLIC_API_URL/api/auth/sync", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

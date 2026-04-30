@@ -34,7 +34,7 @@ export default function EditPromptPage() {
 
     const fetchPrompt = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/prompts/${params.id}`);
+        const res = await fetch(`http://NEXT_PUBLIC_API_URL/api/prompts/${params.id}`);
         if (!res.ok) throw new Error("Failed to load prompt data");
         
         const data = await res.json();
@@ -99,7 +99,7 @@ export default function EditPromptPage() {
     try {
       const token = localStorage.getItem("promptforge_token");
       
-      const response = await fetch(`http://localhost:5000/api/prompts/${params.id}`, {
+      const response = await fetch(`http://NEXT_PUBLIC_API_URL/api/prompts/${params.id}`, {
         method: "PATCH", // <--- Crucial: This is a PATCH request now!
         headers: {
           "Content-Type": "application/json",

@@ -2,42 +2,28 @@
 
 import { useState, useEffect } from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../lib/firebase";
+import { auth, googleProvider } from "@/lib/firebase";
 import { motion } from "framer-motion";
-import { apiClient } from "@/lib/apiClient";
 
 // Import our components
 import HeroSection from "@/components/home/HeroSection";
 import TrendingCategories from "@/components/home/TrendingCategories";
 import FeaturedPrompts from "@/components/home/FeaturedPrompts";
+import BottomCTA from "@/components/home/BottomCTA";
+import Testimonials from "@/components/home/Testimonials";
+import HowItWorks from "@/components/home/HowItWorks";
 
 export default function Home() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
 
-  const [featuredPrompts, setFeaturedPrompts] = useState<any[]>([]);
-  const [isLoadingPrompts, setIsLoadingPrompts] = useState(true);
-
   useEffect(() => {
     const storedUser = localStorage.getItem("promptforge_user");
     if (storedUser) setUser(JSON.parse(storedUser));
     setIsAuthLoaded(true);
-
-    const fetchPrompts = async () => {
-      try {
-        const data = await apiClient.get("/api/prompts?limit=6");
-        
-        const promptsArray = Array.isArray(data) ? data : (data.prompts || []);
-        
-        setFeaturedPrompts(promptsArray.slice(0, 6));
-      } catch (error) {
-        console.error("Failed to fetch featured prompts:", error);
-      } finally {
-        setIsLoadingPrompts(false);
-      }
-    };
-    fetchPrompts();
+    
+    // ✨ Notice how we completely removed the fetchPrompts logic from here!
   }, []);
 
   const handleGoogleLogin = async () => {
@@ -47,17 +33,17 @@ export default function Home() {
       const idToken = await result.user.getIdToken();
 
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      
+
       const response = await fetch(`${API_URL}/api/auth/sync`, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Authorization": `Bearer ${idToken}` 
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`
         },
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         localStorage.setItem("promptforge_token", data.token);
         localStorage.setItem("promptforge_user", JSON.stringify(data.user));
@@ -83,7 +69,11 @@ export default function Home() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 md:pt-32 flex flex-col items-center">
         <HeroSection user={user} isAuthLoaded={isAuthLoaded} onLogin={handleGoogleLogin} isLoggingIn={isLoggingIn} />
         <TrendingCategories />
-        <FeaturedPrompts prompts={featuredPrompts} isLoading={isLoadingPrompts} />
+        <FeaturedPrompts />
+        
+        <HowItWorks />
+        <Testimonials />
+        <BottomCTA />
       </div>
     </div>
   );

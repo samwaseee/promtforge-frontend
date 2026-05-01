@@ -3,38 +3,46 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
+import { Loader2 } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("promptforge_user");
     if (!storedUser) {
-      router.push("/login");
+      router.replace("/login");
       return;
     }
     
     const parsedUser = JSON.parse(storedUser);
     
-    // Kick buyers out of the dashboard layout completely
+    // Kick buyers back to the marketplace
     if (parsedUser.role === "BUYER") {
-      router.push("/explore");
+      router.replace("/explore");
       return;
     }
 
     setUser(parsedUser);
   }, [router]);
 
-  if (!user) return null; // Or a loading spinner
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-blue-500">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 flex">
-      {/* The Sidebar is locked in here for all dashboard routes */}
-      <Sidebar role={user.role} />
+      <Sidebar role={user.role} onHoverChange={setIsHovered} />
       
-      {/* Main content area for the dashboard pages */}
-      <main className="flex-1 pl-16">
+      <main className={`flex-1 transition-all duration-300 relative z-0 ${
+        isHovered ? "pl-64" : "pl-16"
+      }`}>
         {children}
       </main>
     </div>

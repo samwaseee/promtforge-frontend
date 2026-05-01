@@ -1,115 +1,169 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, XCircle, Clock, Eye } from "lucide-react";
-import { apiClient } from "@/lib/apiClient";
+import { Users, DollarSign, Activity, Database, ArrowUpRight } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { useRouter } from "next/navigation";
 
-export default function AdminPortal() {
-  const [pendingPrompts, setPendingPrompts] = useState<any[]>([]);
-  const [selectedPrompt, setSelectedPrompt] = useState<any | null>(null);
+// --- MOCK DATA (Fetch from /api/admin/overview) ---
+const revenueData = [
+  { name: "Mon", revenue: 1200 },
+  { name: "Tue", revenue: 1800 },
+  { name: "Wed", revenue: 1400 },
+  { name: "Thu", revenue: 2200 },
+  { name: "Fri", revenue: 2900 },
+  { name: "Sat", revenue: 3100 },
+  { name: "Sun", revenue: 2800 },
+];
 
-  // 🧹 We no longer need the manual API_URL variable here!
+const categoryData = [
+  { name: 'Development', value: 400 },
+  { name: 'Copywriting', value: 300 },
+  { name: 'Marketing', value: 300 },
+  { name: 'Design', value: 200 },
+];
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
 
-  useEffect(() => {
-    const fetchPending = async () => {
-      try {
-        // ✨ A single, clean GET request. 
-        // The 'true' tells the client to automatically grab and attach the token.
-        const data = await apiClient.get("/api/prompts/admin/pending", true);
-        setPendingPrompts(data);
-      } catch (err) { 
-        console.error("Failed to load pending queue:", err); 
-      }
-    };
-    fetchPending();
-  }, []);
+const recentActivity = [
+  { id: 1, action: "New Sale", details: "'Senior React Architect' sold for $9.99", time: "2 mins ago", type: "sale" },
+  { id: 2, action: "New User", details: "alex.dev joined as Seller", time: "15 mins ago", type: "user" },
+  { id: 3, action: "Prompt Submitted", details: "'SEO Blog Post' is waiting for approval", time: "1 hour ago", type: "system" },
+];
 
-  const handleStatusChange = async (id: string, newStatus: string) => {
-    try {
-      // ✨ A single, clean PATCH request.
-      await apiClient.patch(`/api/prompts/admin/status/${id}`, { status: newStatus }, true);
+export default function AdminOverview() {
+  const router = useRouter();
 
-      // If it succeeds, update the UI
-      setPendingPrompts(prev => prev.filter(p => p.id !== id));
-      setSelectedPrompt(null);
-    } catch (err) { 
-      console.error("Failed to update prompt status:", err); 
-    }
+  return (
+    <div className="p-6 md:p-12 max-w-7xl mx-auto space-y-8">
+      
+      {/* HEADER */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white mb-2">Platform Overview</h1>
+          <p className="text-slate-400">High-level metrics and health of the PromptForge marketplace.</p>
+        </div>
+      </div>
+
+      {/* TOP KPI CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <MetricCard title="Total GMV" value="$12,450" icon={<DollarSign />} trend="+18.2%" color="blue" />
+        <MetricCard title="Total Users" value="1,204" icon={<Users />} trend="+4.1%" color="emerald" />
+        <MetricCard title="Active Prompts" value="842" icon={<Database />} trend="+12%" color="amber" />
+        
+        {/* Interactive card linking to the Approval Queue */}
+        <motion.div 
+          whileHover={{ y: -2 }} 
+          onClick={() => router.push('/dashboard/approvals')}
+          className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl backdrop-blur-md cursor-pointer hover:border-blue-500/50 transition-colors group"
+        >
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-3 bg-red-500/10 text-red-400 rounded-xl"><Activity /></div>
+            <span className="text-xs font-bold text-slate-400 group-hover:text-blue-400 transition-colors flex items-center gap-1">
+              View Queue <ArrowUpRight className="w-3 h-3" />
+            </span>
+          </div>
+          <div>
+            <h4 className="text-3xl font-black text-white mb-1">14</h4>
+            <p className="text-sm font-medium text-slate-400">Pending Approvals</p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* CHARTS ROW */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* MAIN REVENUE CHART (Spans 2 columns) */}
+        <div className="lg:col-span-2 bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md">
+          <h3 className="text-lg font-bold text-white mb-6">Platform GMV (Last 7 Days)</h3>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorPlatformRev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
+                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px' }} itemStyle={{ color: '#10b981' }} />
+                <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorPlatformRev)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* CATEGORY DISTRIBUTION (Spans 1 column) */}
+        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md flex flex-col">
+          <h3 className="text-lg font-bold text-white mb-2">Inventory by Category</h3>
+          <div className="flex-1 min-h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={categoryData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            {categoryData.map((category, idx) => (
+              <div key={category.name} className="flex items-center gap-2 text-xs text-slate-300">
+                <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: COLORS[idx] }} />
+                {category.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* RECENT ACTIVITY LOG */}
+      <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md">
+        <h3 className="text-lg font-bold text-white mb-6">Live Platform Activity</h3>
+        <div className="space-y-4">
+          {recentActivity.map((activity) => (
+            <div key={activity.id} className="flex justify-between items-center p-4 bg-slate-950/50 rounded-xl border border-slate-800/50">
+              <div className="flex items-center gap-4">
+                <div className={`w-2 h-2 rounded-full ${activity.type === 'sale' ? 'bg-emerald-500' : activity.type === 'user' ? 'bg-blue-500' : 'bg-amber-500'}`} />
+                <div>
+                  <p className="text-sm font-bold text-slate-200">{activity.action}</p>
+                  <p className="text-xs text-slate-500">{activity.details}</p>
+                </div>
+              </div>
+              <span className="text-xs font-medium text-slate-500">{activity.time}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+function MetricCard({ title, value, icon, trend, color }: any) {
+  // Dynamic color maps for the icons
+  const colorMap: any = {
+    blue: "bg-blue-500/10 text-blue-400",
+    emerald: "bg-emerald-500/10 text-emerald-400",
+    amber: "bg-amber-500/10 text-amber-400"
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-12 border-b border-slate-800 pb-8">
-        <h1 className="text-4xl font-extrabold text-white mb-2">Admin Approval Queue</h1>
-        <p className="text-slate-400">Review pending submissions before they go live on the marketplace.</p>
+    <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl backdrop-blur-md">
+      <div className="flex items-start justify-between mb-4">
+        <div className={`p-3 rounded-xl ${colorMap[color]}`}>
+          {icon}
+        </div>
+        <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-lg">
+          {trend}
+        </span>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* LEFT COL: The Queue */}
-        <div className="lg:col-span-1 space-y-4">
-          <h2 className="text-lg font-bold text-slate-300 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-orange-400" /> Needs Review ({pendingPrompts.length})
-          </h2>
-
-          {pendingPrompts.length === 0 ? (
-            <div className="p-6 text-center border border-dashed border-slate-800 rounded-xl text-slate-500">Inbox Zero! No pending prompts.</div>
-          ) : (
-            pendingPrompts.map(prompt => (
-              <div
-                key={prompt.id}
-                onClick={() => setSelectedPrompt(prompt)}
-                className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedPrompt?.id === prompt.id ? 'bg-blue-600/10 border-blue-500' : 'bg-slate-900/50 border-slate-800 hover:border-slate-600'}`}
-              >
-                <p className="font-bold text-sm text-white truncate">{prompt.title}</p>
-                <p className="text-xs text-slate-400 mt-1">By: {prompt.seller.name}</p>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* RIGHT COL: The Review Panel */}
-        <div className="lg:col-span-2">
-          {selectedPrompt ? (
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 backdrop-blur-md">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-white">{selectedPrompt.title}</h2>
-                  <p className="text-sm text-slate-400 mt-1">Seller: {selectedPrompt.seller.email}</p>
-                </div>
-                <div className="text-xl font-black text-emerald-400">${selectedPrompt.price.toFixed(2)}</div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xs font-bold uppercase text-slate-500 mb-2">Public Description</h3>
-                  <p className="text-sm text-slate-300 bg-slate-950 p-4 rounded-lg border border-slate-800 leading-relaxed">{selectedPrompt.description}</p>
-                </div>
-
-                <div>
-                  <h3 className="text-xs font-bold uppercase text-emerald-500 mb-2 flex items-center gap-2"><Eye className="w-4 h-4" /> Secret Prompt Content</h3>
-                  {/* ✅ The promptText fix is intact here! */}
-                  <p className="text-sm text-emerald-100 bg-emerald-950/30 p-4 rounded-lg border border-emerald-900/50 font-mono leading-relaxed whitespace-pre-wrap">{selectedPrompt.promptText}</p>
-                </div>
-              </div>
-
-              {/* ACTION BUTTONS */}
-              <div className="flex gap-4 mt-10 pt-6 border-t border-slate-800">
-                <button onClick={() => handleStatusChange(selectedPrompt.id, "APPROVED")} className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-colors">
-                  <CheckCircle className="w-5 h-5" /> Approve & Publish
-                </button>
-                <button onClick={() => handleStatusChange(selectedPrompt.id, "REJECTED")} className="flex-1 py-3 bg-slate-800 hover:bg-red-600/20 text-slate-300 hover:text-red-400 font-bold border border-slate-700 hover:border-red-500/50 rounded-xl flex items-center justify-center gap-2 transition-all">
-                  <XCircle className="w-5 h-5" /> Reject
-                </button>
-              </div>
-            </motion.div>
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center border border-dashed border-slate-800 rounded-2xl bg-slate-900/20 text-slate-500 min-h-[400px]">
-              <Eye className="w-12 h-12 mb-4 opacity-50" />
-              <p>Select a prompt from the queue to review its contents.</p>
-            </div>
-          )}
-        </div>
+      <div>
+        <p className="text-slate-400 text-sm font-medium mb-1">{title}</p>
+        <h4 className="text-3xl font-black text-white">{value}</h4>
       </div>
     </div>
   );

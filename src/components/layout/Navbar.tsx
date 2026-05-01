@@ -47,6 +47,10 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
+  if (pathname.startsWith("/dashboard")) {
+    return null;
+  }
+
   return (
     <motion.nav
       variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}

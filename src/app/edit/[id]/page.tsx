@@ -26,15 +26,10 @@ export default function EditPromptPage() {
 
   // 1. Fetch Existing Data on Load
   useEffect(() => {
-    const token = localStorage.getItem("promptforge_token");
-    if (!token) {
-      router.push("/");
-      return;
-    }
-
     const fetchPrompt = async () => {
       try {
-        const res = await fetch(`http://process.env.NEXT_PUBLIC_API_URL/api/prompts/${params.id}`);
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const res = await fetch(`${API_URL}/api/prompts/${params.id}`);
         if (!res.ok) throw new Error("Failed to load prompt data");
         
         const data = await res.json();
@@ -67,11 +62,11 @@ export default function EditPromptPage() {
     setIsUploading(true);
     const data = new FormData();
     data.append("file", file);
-    data.append("upload_preset", "YOUR_CLOUDINARY_PRESET"); // <--- SWAP THIS
-    data.append("cloud_name", "YOUR_CLOUD_NAME"); // <--- SWAP THIS
+    data.append("upload_preset", "promptforge");
+    data.append("cloud_name", "danp5ejbu");
 
     try {
-      const res = await fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", {
+      const res = await fetch("https://api.cloudinary.com/v1_1/danp5ejbu/image/upload", {
         method: "POST",
         body: data,
       });
@@ -98,8 +93,9 @@ export default function EditPromptPage() {
 
     try {
       const token = localStorage.getItem("promptforge_token");
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       
-      const response = await fetch(`http://process.env.NEXT_PUBLIC_API_URL/api/prompts/${params.id}`, {
+      const response = await fetch(`${API_URL}/api/prompts/${params.id}`, {
         method: "PATCH", // <--- Crucial: This is a PATCH request now!
         headers: {
           "Content-Type": "application/json",

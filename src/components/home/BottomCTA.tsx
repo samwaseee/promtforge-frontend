@@ -28,7 +28,7 @@ export default function BottomCTA() {
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link 
-                href="/login" 
+                href="/register" 
                 className="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-slate-800 text-white font-bold rounded-xl border border-slate-600 hover:border-slate-500 transition-all text-center"
               >
                 Become a Seller

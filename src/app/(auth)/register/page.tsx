@@ -87,6 +87,7 @@ export default function RegisterPage() {
                     "Authorization": `Bearer ${idToken}`,
                 },
                 body: JSON.stringify({
+                    name: formData.name, // ✨ THIS IS THE MISSING PIECE!
                     role: formData.role,
                     avatar: formData.avatar,
                 }),

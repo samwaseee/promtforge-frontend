@@ -63,7 +63,7 @@ export default function Sidebar({ role, onHoverChange }: SidebarProps) {
       className="fixed left-0 top-0 h-screen bg-slate-950 border-r border-slate-800 z-50 transition-all duration-300 overflow-hidden flex flex-col group w-16 hover:w-64 shadow-2xl"
     >
       {/* Logo Area */}
-      <div className="h-16 flex items-center justify-center border-b border-slate-800 whitespace-nowrap px-4 bg-slate-900/50">
+      <Link href="/" className="h-16 flex items-center justify-center border-b border-slate-800 whitespace-nowrap px-4 bg-slate-900/50">
         <span className="text-blue-500 font-black text-xl group-hover:hidden">PF</span>
         <div className="hidden group-hover:flex items-center gap-2 ml-2 w-full">
           <div className="w-6 h-6 rounded bg-blue-600 flex items-center justify-center">
@@ -71,7 +71,7 @@ export default function Sidebar({ role, onHoverChange }: SidebarProps) {
           </div>
           <span className="text-white font-bold text-lg tracking-tight">PromptForge</span>
         </div>
-      </div>
+      </Link>
 
       {/* Navigation Links */}
       <div className="flex-1 py-6 flex flex-col gap-1 px-3 overflow-y-auto overflow-x-hidden scrollbar-hide">

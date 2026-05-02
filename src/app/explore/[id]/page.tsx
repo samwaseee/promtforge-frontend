@@ -16,10 +16,17 @@ import {
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { apiClient } from "@/lib/apiClient";
+import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext"; // ✨ NEW: Import the cart context
+import { Loader2 } from "lucide-react";
 
 export default function PromptDetailsPage() {
     const params = useParams();
     const id = params.id as string;
+    
+    const { user } = useAuth();
+    // ✨ NEW: Pull in cart actions and state
+    const { addToCart, cartItems } = useCart(); 
 
     const [prompt, setPrompt] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -50,16 +57,9 @@ export default function PromptDetailsPage() {
         return (
             <div className="min-h-screen bg-slate-950 pt-8 pb-24">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
-
-                    {/* Back Button Skeleton */}
                     <div className="h-4 w-32 bg-slate-800/50 rounded animate-pulse mb-8" />
-
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-
-                        {/* LEFT COLUMN SKELETON */}
                         <div className="lg:col-span-2 space-y-12 animate-pulse">
-
-                            {/* Header Skeleton */}
                             <div>
                                 <div className="flex gap-3 mb-4">
                                     <div className="h-6 w-24 bg-slate-800/80 rounded-full" />
@@ -69,40 +69,29 @@ export default function PromptDetailsPage() {
                                 <div className="h-12 w-1/2 bg-slate-800/80 rounded-xl mb-6" />
                                 <div className="h-4 w-64 bg-slate-800/50 rounded" />
                             </div>
-
-                            {/* Image Skeleton */}
                             <div className="w-full aspect-[21/9] bg-slate-800/50 rounded-3xl border border-slate-800/50" />
-
-                            {/* Description Skeleton */}
                             <div>
                                 <div className="h-6 w-40 bg-slate-800/80 rounded mb-4" />
                                 <div className="h-32 w-full bg-slate-800/40 border border-slate-800/50 rounded-2xl" />
                             </div>
-
-                            {/* Output/Features Skeleton */}
                             <div>
                                 <div className="h-6 w-48 bg-slate-800/80 rounded mb-4" />
                                 <div className="h-48 w-full bg-slate-800/40 border border-slate-800/50 rounded-2xl" />
                             </div>
                         </div>
-
-                        {/* RIGHT COLUMN SKELETON (Buy Box) */}
                         <div className="lg:col-span-1">
                             <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-8 backdrop-blur-md animate-pulse">
                                 <div className="mb-8">
                                     <div className="h-4 w-32 bg-slate-800/80 rounded mb-4" />
                                     <div className="h-12 w-48 bg-slate-800/80 rounded" />
                                 </div>
-
                                 <div className="h-16 w-full bg-slate-800/80 rounded-xl mb-6" />
-
                                 <div className="space-y-4 pt-6 border-t border-slate-800/50">
                                     <div className="h-4 w-full bg-slate-800/50 rounded" />
                                     <div className="h-4 w-5/6 bg-slate-800/50 rounded" />
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -139,19 +128,8 @@ export default function PromptDetailsPage() {
 
     const sellerName = prompt.seller?.name || "Anonymous Maker";
 
-    const handlePurchase = () => {
-        const userStr = localStorage.getItem("promptforge_user");
-
-        if (!userStr) {
-            // If they aren't logged in, send them to login, but pass the current URL 
-            // so you can send them right back here after they authenticate!
-            router.push(`/login?redirect=/explore/${id}`);
-            return;
-        }
-
-        // If they are logged in, trigger your Stripe/Checkout flow
-        console.log("Proceeding to checkout...");
-    };
+    // ✨ NEW: Check if this specific prompt is already sitting in the cart
+    const isInCart = cartItems?.some((item: any) => item.id === prompt.id);
 
     return (
         <div className="min-h-screen bg-slate-950 pt-8 pb-24">
@@ -317,12 +295,24 @@ export default function PromptDetailsPage() {
                                 </div>
                             </div>
 
+                            {/* ✨ NEW: Replaced handlePurchase with addToCart and updated UI state */}
                             <button
-                                onClick={handlePurchase}
-                                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] mb-6"
+                                onClick={() => addToCart({
+                                    id: prompt.id,
+                                    title: prompt.title,
+                                    price: prompt.price,
+                                    category: prompt.category,
+                                    imageUrl: prompt.imageUrl
+                                })}
+                                disabled={isInCart}
+                                className={`w-full font-bold text-lg py-4 rounded-xl transition-all flex items-center justify-center gap-2 mb-6 ${
+                                    isInCart 
+                                    ? "bg-slate-800 text-slate-400 cursor-not-allowed" 
+                                    : "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]"
+                                }`}
                             >
                                 <ShoppingCart className="w-5 h-5" />
-                                Purchase Prompt
+                                {isInCart ? "Added to Cart" : "Add to Cart"}
                             </button>
 
                             <div className="space-y-4 pt-6 border-t border-slate-800 text-sm text-slate-400">

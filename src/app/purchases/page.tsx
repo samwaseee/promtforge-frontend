@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 // ✨ NEW: Imported useRouter and usePathname for URL cleanup
 import { useSearchParams, useRouter, usePathname } from "next/navigation"; 
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,7 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { apiClient } from "@/lib/apiClient";
 import { useCart } from "@/context/CartContext"; // Add this if you want to wipe the cart on success!
 
-export default function PurchasesPage() {
+function PurchasesContent() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success");
   
@@ -229,5 +229,18 @@ export default function PurchasesPage() {
       </AnimatePresence>
 
     </div>
+  );
+}
+
+// 3. Create the Main Export that wraps the content in Suspense
+export default function PurchasesPage() {
+  return (
+    <Suspense fallback={
+        <div className="min-h-[60vh] flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        </div>
+    }>
+      <PurchasesContent />
+    </Suspense>
   );
 }

@@ -4,14 +4,16 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import { User, Settings, LogOut, ShoppingCart, LayoutDashboard, Loader2, Trash2, X, Menu } from "lucide-react";
+import { User, Settings, LogOut, ShoppingCart, LayoutDashboard, Loader2, Trash2, X, Menu, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { useTheme } from "@/context/ThemeContext";
 import { apiClient } from "@/lib/apiClient";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout, isLoading } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -34,12 +36,12 @@ export default function Navbar() {
     after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-blue-400 after:transition-all after:duration-300
     ${isActive(path)
       ? "text-blue-400 [text-shadow:_0_0_15px_rgba(96,165,250,0.6)] after:w-full" // Active: Text glows, line is full width
-      : "text-slate-300 hover:text-white after:w-0 hover:after:w-full"            // Inactive: Line expands on hover
+      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white after:w-0 hover:after:w-full"            // Inactive: Line expands on hover
     }`;
 
   const mobileLinkClass = (path: string) => `block text-lg font-semibold transition-all duration-300 ${isActive(path)
     ? "text-blue-400 [text-shadow:_0_0_15px_rgba(96,165,250,0.6)]" // The Blue Glow
-    : "text-slate-300 hover:text-white"
+    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
     }`;
 
   const handleCartCheckout = async () => {
@@ -91,14 +93,14 @@ export default function Navbar() {
       variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="fixed top-0 w-full z-50 bg-slate-950/70 backdrop-blur-xl border-b border-white/5"
+      className="fixed top-0 w-full z-50 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200 dark:border-white/5"
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white group-hover:bg-blue-500 transition-all shadow-[0_0_15px_-3px_rgba(37,99,235,0.4)]">PF</div>
-          <span className="text-xl font-extrabold text-slate-100 tracking-tight">Prompt<span className="text-blue-500">Forge</span></span>
+          <span className="text-xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Prompt<span className="text-blue-500">Forge</span></span>
         </Link>
 
         {/* Desktop Links */}
@@ -118,6 +120,10 @@ export default function Navbar() {
             </div>
           ) : user ? (
             <>
+              <button onClick={toggleTheme} className="p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+
               {/* Desktop-only Library Link */}
               {user.role === "BUYER" && (
                 <Link href="/purchases" className={`hidden md:block ${desktopLinkClass("/purchases")}`}>
@@ -133,7 +139,7 @@ export default function Navbar() {
               ) : (
                 /* CART */
                 <div className="relative" ref={cartRef}>
-                  <button onClick={() => { setIsCartOpen(!isCartOpen); setIsDropdownOpen(false); setIsMobileMenuOpen(false); }} className="relative p-2 text-slate-300 hover:text-blue-400 transition-colors rounded-full hover:bg-slate-800">
+                  <button onClick={() => { setIsCartOpen(!isCartOpen); setIsDropdownOpen(false); setIsMobileMenuOpen(false); }} className="relative p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
                     <ShoppingCart className="w-6 h-6 md:w-5 md:h-5" />
                     {cartItems.length > 0 && (
                       <span className="absolute top-0 right-0 w-4 h-4 bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-slate-950">
@@ -147,25 +153,25 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 top-12 w-[calc(100vw-2rem)] max-w-[320px] md:w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden py-2 cursor-default z-50"
+                        className="absolute right-0 top-12 w-[calc(100vw-2rem)] max-w-[320px] md:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden py-2 cursor-default z-50"
                       >
-                        <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-                          <h3 className="text-sm font-bold text-white">Your Cart</h3>
-                          <span className="text-xs font-medium text-slate-400">{cartItems.length} items</span>
+                        <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Your Cart</h3>
+                          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{cartItems.length} items</span>
                         </div>
                         <div className="max-h-[50vh] overflow-y-auto p-2 space-y-1">
                           {cartItems.length === 0 ? (
                             <div className="text-center py-8">
-                              <ShoppingCart className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                              <p className="text-sm text-slate-400">Your cart is empty.</p>
+                              <ShoppingCart className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
+                              <p className="text-sm text-slate-500 dark:text-slate-400">Your cart is empty.</p>
                             </div>
                           ) : (
                             cartItems.map((item: any) => (
-                              <div key={item.id} className="flex gap-3 p-2 hover:bg-slate-800/50 rounded-xl transition-colors group">
+                              <div key={item.id} className="flex gap-3 p-2 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl transition-colors group">
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-bold text-slate-200 truncate">{item.title}</p>
+                                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{item.title}</p>
                                   <div className="flex items-center justify-between mt-1">
-                                    <span className="text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">{item.category}</span>
+                                    <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{item.category}</span>
                                     <span className="text-sm font-bold text-blue-400">${item.price.toFixed(2)}</span>
                                   </div>
                                 </div>
@@ -177,10 +183,10 @@ export default function Navbar() {
                           )}
                         </div>
                         {cartItems.length > 0 && (
-                          <div className="p-4 border-t border-slate-800 bg-slate-900/50">
+                          <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
                             <div className="flex items-center justify-between mb-4">
-                              <span className="text-sm text-slate-400">Total</span>
-                              <span className="text-lg font-black text-white">${cartTotal.toFixed(2)}</span>
+                              <span className="text-sm text-slate-600 dark:text-slate-400">Total</span>
+                              <span className="text-lg font-black text-slate-900 dark:text-white">${cartTotal.toFixed(2)}</span>
                             </div>
                             <button onClick={handleCartCheckout} disabled={isCheckingOut} className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_-3px_rgba(37,99,235,0.4)] flex justify-center items-center gap-2">
                               {isCheckingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
@@ -204,13 +210,13 @@ export default function Navbar() {
                       referrerPolicy="no-referrer"
                       onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=User&background=0D1424&color=3B82F6"; }} className="w-9 h-9 rounded-full border-2 border-slate-700 object-cover" />
                   ) : (
-                    <div className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center border-2 border-slate-700 text-slate-400"><User className="w-4 h-4" /></div>
+                    <div className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border-2 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400"><User className="w-4 h-4" /></div>
                   )}
                 </button>
                 <AnimatePresence>
                   {isDropdownOpen && (
-                    <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute right-0 top-12 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden py-1 z-50">
-                      <Link href="/profile" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"><Settings className="w-4 h-4 text-slate-400" /> Profile</Link>
+                    <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute right-0 top-12 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl overflow-hidden py-1 z-50">
+                      <Link href="/profile" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"><Settings className="w-4 h-4 text-slate-400" /> Profile</Link>
                       <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"><LogOut className="w-4 h-4" /> Logout</button>
                     </motion.div>
                   )}
@@ -220,13 +226,16 @@ export default function Navbar() {
           ) : (
             /* LOGIN/SIGNUP */
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/login" className="text-sm font-semibold tracking-wide text-slate-300 hover:text-white transition-colors">Log In</Link>
+              <button onClick={toggleTheme} className="p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              <Link href="/login" className="text-sm font-semibold tracking-wide text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">Log In</Link>
               <Link href="/register" className="text-sm font-bold tracking-wide bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl transition-all shadow-[0_0_15px_-3px_rgba(37,99,235,0.4)] hover:shadow-[0_0_20px_-3px_rgba(37,99,235,0.6)]">Sign Up</Link>
             </div>
           )}
 
           {/* HAMBURGER BUTTON */}
-          <button className="md:hidden p-2 text-slate-300" onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setIsCartOpen(false); }}>
+          <button className="md:hidden p-2 text-slate-600 dark:text-slate-300" onClick={() => { setIsMobileMenuOpen(!isMobileMenuOpen); setIsCartOpen(false); }}>
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -239,24 +248,24 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-slate-950 border-b border-white/10 px-6 py-4 space-y-4 overflow-hidden absolute top-16 left-0 w-full shadow-2xl"
+            className="md:hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-white/10 px-6 py-4 space-y-4 overflow-hidden absolute top-16 left-0 w-full shadow-2xl"
           >
             {/* Mobile Profile Header */}
             {user && (
-              <div className="flex items-center gap-4 pb-4 border-b border-slate-800/50 mb-4">
+              <div className="flex items-center gap-4 pb-4 border-b border-slate-200 dark:border-slate-800/50 mb-4">
                 {user.avatar ? (
                   <img
                     src={user.avatar}
                     alt="Profile"
                     referrerPolicy="no-referrer"
-                    onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=User&background=0D1424&color=3B82F6"; }} className={`w-12 h-12 rounded-full border-2 object-cover ${isActive("/profile") ? "border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.5)]" : "border-slate-700"}`} />
+                    onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=User&background=0D1424&color=3B82F6"; }} className={`w-12 h-12 rounded-full border-2 object-cover ${isActive("/profile") ? "border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.5)]" : "border-slate-300 dark:border-slate-700"}`} />
                 ) : (
-                  <div className={`w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border-2 text-slate-400 ${isActive("/profile") ? "border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.5)] text-blue-400" : "border-slate-700"}`}>
+                  <div className={`w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border-2 text-slate-500 dark:text-slate-400 ${isActive("/profile") ? "border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.5)] text-blue-400" : "border-slate-300 dark:border-slate-700"}`}>
                     <User className="w-6 h-6" />
                   </div>
                 )}
                 <div>
-                  <p className="text-white font-bold">{user.name || "Prompt Crafter"}</p>
+                  <p className="text-slate-900 dark:text-white font-bold">{user.name || "Prompt Crafter"}</p>
                   <Link href="/profile" className="text-blue-500 text-sm font-medium">Manage Account</Link>
                 </div>
               </div>
@@ -271,7 +280,12 @@ export default function Navbar() {
             <Link href="/contact" className={mobileLinkClass("/contact")}>Contact</Link>
             <Link href="/faq" className={mobileLinkClass("/faq")}>FAQ</Link>
 
-            <hr className="border-white/10 mt-2 mb-2" />
+            <hr className="border-slate-200 dark:border-white/10 mt-2 mb-2" />
+            
+            {/* Mobile Theme Toggle */}
+            <button onClick={toggleTheme} className="flex items-center gap-3 py-2 text-lg font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors w-full text-left">
+              {theme === "dark" ? <><Sun className="w-5 h-5" /> Light Mode</> : <><Moon className="w-5 h-5" /> Dark Mode</>}
+            </button>
 
             {user ? (
               <button onClick={logout} className="block w-full text-left text-lg font-bold text-red-400 py-2 hover:text-red-300 transition-colors">Logout</button>

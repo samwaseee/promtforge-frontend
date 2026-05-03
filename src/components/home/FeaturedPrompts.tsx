@@ -69,8 +69,8 @@ export default function FeaturedPrompts() {
       {/* HEADER AREA WITH SIMPLE BUTTON */}
       <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-100">Trending Prompts</h2>
-          <p className="text-slate-400 mt-2 font-medium">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100">Trending Prompts</h2>
+          <p className="text-slate-600 dark:text-slate-400 mt-2 font-medium">
             Swipe through the highest-rated systems
           </p>
         </div>
@@ -121,31 +121,31 @@ export default function FeaturedPrompts() {
                     opacity: 1 - absOffset * 0.15,
                     filter: absOffset > 0 ? `blur(${absOffset * 3}px)` : "blur(0px)",
                   }}
-                  className="absolute top-0 left-0 w-full h-full bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col justify-between"
+                className="absolute top-0 left-0 w-full h-full bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col justify-between"
                 >
                   <div className="animate-pulse">
                     {/* Image Skeleton */}
-                    <div className="w-full h-32 md:h-36 mb-4 rounded-xl bg-slate-800/50" />
+                    <div className="w-full h-32 md:h-36 mb-4 rounded-xl bg-slate-200 dark:bg-slate-800/50" />
                     
                     {/* Badges Skeleton */}
                     <div className="flex justify-between items-start mb-3">
-                      <div className="w-16 h-5 bg-slate-800/80 rounded" />
-                      <div className="w-10 h-4 bg-slate-800/80 rounded" />
+                      <div className="w-16 h-5 bg-slate-300 dark:bg-slate-800/80 rounded" />
+                      <div className="w-10 h-4 bg-slate-300 dark:bg-slate-800/80 rounded" />
                     </div>
 
                     {/* Text Skeleton */}
-                    <div className="w-3/4 h-6 bg-slate-800/80 rounded mb-4" />
-                    <div className="w-full h-4 bg-slate-800/50 rounded mb-2" />
-                    <div className="w-5/6 h-4 bg-slate-800/50 rounded" />
+                    <div className="w-3/4 h-6 bg-slate-300 dark:bg-slate-800/80 rounded mb-4" />
+                    <div className="w-full h-4 bg-slate-200 dark:bg-slate-800/50 rounded mb-2" />
+                    <div className="w-5/6 h-4 bg-slate-200 dark:bg-slate-800/50 rounded" />
                   </div>
                   
                   {/* Footer Skeleton */}
-                  <div className="flex justify-between items-end pt-3 border-t border-slate-800/50 animate-pulse">
+                  <div className="flex justify-between items-end pt-3 border-t border-slate-200 dark:border-slate-800/50 animate-pulse">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-800/80" />
-                      <div className="w-20 h-4 bg-slate-800/50 rounded" />
+                      <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-slate-800/80" />
+                      <div className="w-20 h-4 bg-slate-200 dark:bg-slate-800/50 rounded" />
                     </div>
-                    <div className="w-16 h-6 bg-slate-800/80 rounded" />
+                    <div className="w-16 h-6 bg-slate-300 dark:bg-slate-800/80 rounded" />
                   </div>
                 </motion.div>
               );
@@ -158,7 +158,7 @@ export default function FeaturedPrompts() {
         // ==========================================
         // EMPTY STATE
         // ==========================================
-        <div className="text-center py-16 text-slate-400 w-full h-[400px] flex items-center justify-center border border-dashed border-slate-800 rounded-3xl">
+        <div className="text-center py-16 text-slate-600 dark:text-slate-400 w-full h-[400px] flex items-center justify-center border border-dashed border-slate-300 dark:border-slate-800 rounded-3xl">
           No prompts available yet.
         </div>
         
@@ -172,14 +172,14 @@ export default function FeaturedPrompts() {
           {/* Navigation Controls */}
           <button 
             onClick={handlePrev}
-            className="absolute left-2 md:left-10 z-50 p-4 rounded-full bg-slate-900/80 border border-slate-700 text-white hover:bg-blue-600 hover:border-blue-500 transition-all backdrop-blur-md"
+            className="absolute left-2 md:left-10 z-50 p-4 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white hover:text-white hover:bg-blue-600 dark:hover:bg-blue-600 hover:border-blue-500 dark:hover:border-blue-500 transition-all backdrop-blur-md"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
 
           <button 
             onClick={handleNext}
-            className="absolute right-2 md:right-10 z-50 p-4 rounded-full bg-slate-900/80 border border-slate-700 text-white hover:bg-blue-600 hover:border-blue-500 transition-all backdrop-blur-md"
+            className="absolute right-2 md:right-10 z-50 p-4 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white hover:text-white hover:bg-blue-600 dark:hover:bg-blue-600 hover:border-blue-500 dark:hover:border-blue-500 transition-all backdrop-blur-md"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -231,14 +231,14 @@ export default function FeaturedPrompts() {
                       }
                     }
                   } : {})}
-                  className={`absolute top-0 left-0 w-full h-full bg-slate-900/60 border border-slate-700 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col justify-between group ${isActive ? 'cursor-grab active:cursor-grabbing hover:border-blue-500/50 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.4)]' : 'cursor-pointer'}`}
+                className={`absolute top-0 left-0 w-full h-full bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col justify-between group ${isActive ? 'cursor-grab active:cursor-grabbing hover:border-blue-500/50 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.4)]' : 'cursor-pointer'}`}
                 >
                   {/* Subtle top gradient line that only appears on the active card hover */}
                   <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/50 to-purple-500/0 transition-opacity ${isActive ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'}`}></div>
 
                   <div>
                     {/* THE IMAGE BLOCK */}
-                    <div className="w-full h-32 md:h-36 mb-4 overflow-hidden rounded-xl bg-slate-950/50 border border-slate-800/50 relative pointer-events-none">
+                  <div className="w-full h-32 md:h-36 mb-4 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/50 relative pointer-events-none">
                       {prompt.imageUrl ? (
                         <img 
                           src={prompt.imageUrl} 
@@ -246,7 +246,7 @@ export default function FeaturedPrompts() {
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-700 bg-slate-900/50">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-700 bg-slate-200 dark:bg-slate-900/50">
                           <ImageIcon className="w-8 h-8 mb-2 opacity-30" />
                           <span className="text-[10px] font-semibold uppercase tracking-wider opacity-30">No Preview</span>
                         </div>
@@ -254,7 +254,7 @@ export default function FeaturedPrompts() {
                     </div>
 
                     <div className="flex justify-between items-start mb-3">
-                      <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-slate-800 text-slate-300 rounded border border-slate-700">
+                    <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded border border-slate-200 dark:border-slate-700">
                         {prompt.aiModel}
                       </span>
                       <div className="flex items-center gap-1 text-amber-400 text-xs font-bold">
@@ -264,7 +264,7 @@ export default function FeaturedPrompts() {
                       </div>
                     </div>
 
-                    <h3 className="text-lg md:text-xl font-bold text-slate-100 leading-snug mb-2 line-clamp-1 group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white leading-snug mb-2 line-clamp-1 group-hover:text-blue-400 transition-colors">
                       {prompt.title}
                     </h3>
                     

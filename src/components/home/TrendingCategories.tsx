@@ -29,8 +29,8 @@ export default function TrendingCategories() {
       className="w-full mb-24"
     >
       <div className="flex flex-col items-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-100">Explore by Category</h2>
-        <p className="text-slate-400 mt-2">Find the exact tool for your workflow</p>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Explore by Category</h2>
+        <p className="text-slate-600 dark:text-slate-400 mt-2">Find the exact tool for your workflow</p>
       </div>
       
       <div className="flex flex-wrap justify-center gap-4">
@@ -40,10 +40,10 @@ export default function TrendingCategories() {
             onClick={() => handleCategoryClick(cat.name)}
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-6 py-3 bg-slate-900/50 border border-slate-800 rounded-full hover:bg-slate-800 hover:border-slate-600 transition-colors backdrop-blur-sm"
+            className="flex items-center gap-2 px-6 py-3 bg-white/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-colors backdrop-blur-sm"
           >
             <span className="text-blue-400">{cat.icon}</span>
-            <span className="font-medium text-slate-200">{cat.name}</span>
+            <span className="font-medium text-slate-700 dark:text-slate-200">{cat.name}</span>
           </motion.button>
         ))}
       </div>

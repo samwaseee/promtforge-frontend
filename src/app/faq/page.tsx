@@ -15,18 +15,18 @@ export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-slate-950 pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 pb-12 px-6 transition-colors duration-300">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-black text-white text-center mb-12">Frequently Asked Questions</h1>
+        <h1 className="text-4xl font-black text-slate-900 dark:text-white text-center mb-12">Frequently Asked Questions</h1>
         
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div key={index} className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+            <div key={index} className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm dark:shadow-none transition-colors">
               <button 
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
+                className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
               >
-                <span className="font-bold text-slate-200">{faq.question}</span>
+                <span className="font-bold text-slate-900 dark:text-slate-200">{faq.question}</span>
                 <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform ${openIndex === index ? "rotate-180" : ""}`} />
               </button>
               
@@ -37,7 +37,7 @@ export default function FAQPage() {
                     animate={{ height: "auto", opacity: 1 }} 
                     exit={{ height: 0, opacity: 0 }}
                   >
-                    <div className="px-6 pb-5 text-slate-400 text-sm leading-relaxed border-t border-slate-800/50 pt-4 mt-2">
+                    <div className="px-6 pb-5 text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-t border-slate-100 dark:border-slate-800/50 pt-4 mt-2">
                       {faq.answer}
                     </div>
                   </motion.div>

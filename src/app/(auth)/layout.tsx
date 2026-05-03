@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   // Show a loading screen while checking, OR if we are about to redirect them
   if (isLoading || user) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center transition-colors">
         <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
       </div>
     );

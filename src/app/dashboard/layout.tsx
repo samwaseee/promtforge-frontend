@@ -30,14 +30,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-blue-500">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center text-blue-500">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 flex">
       <Sidebar role={user.role} onHoverChange={setIsHovered} />
       
       <main className={`flex-1 transition-all duration-300 relative z-0 ${

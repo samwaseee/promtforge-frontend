@@ -45,26 +45,26 @@ export default function HeroSection({ user, isAuthLoaded, onLogin, isLoggingIn }
             // The secret to professional UI pacing:
             times: [0, 0.4, 0.85, 1]
           }}
-          className="relative inline-flex items-center px-5 py-1.5 rounded-full bg-slate-900 border border-blue-500/50 text-blue-400 text-sm font-bold backdrop-blur-md"
+          className="relative inline-flex items-center px-5 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-blue-500/50 text-blue-600 dark:text-blue-400 text-sm font-bold backdrop-blur-md"
         >
           Marketplace Live
         </motion.div>
       </motion.div>
 
-      <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-extrabold tracking-tight">
+      <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white">
         Master the <br className="hidden md:block" />
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
           Machine Whisper.
         </span>
       </motion.h1>
 
-      <motion.p variants={itemVariants} className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-light">
+      <motion.p variants={itemVariants} className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-light">
         The premium marketplace for discovering, buying, and selling highly-engineered AI prompts for GPT-4, Claude, and Midjourney.
       </motion.p>
 
       <motion.div variants={itemVariants} className="pt-4 min-h-[80px] flex items-center justify-center">
         {!isAuthLoaded ? (
-          <div className="w-8 h-8 border-2 border-slate-700 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-2 border-slate-300 dark:border-slate-700 border-t-transparent rounded-full animate-spin"></div>
         ) : user ? (
           <button
             onClick={() => router.push("/explore")}
@@ -79,10 +79,10 @@ export default function HeroSection({ user, isAuthLoaded, onLogin, isLoggingIn }
           <button
             onClick={onLogin}
             disabled={isLoggingIn}
-            className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-white text-slate-900 font-bold rounded-xl shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:scale-105 hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.5)] transition-all duration-300 disabled:opacity-70 disabled:hover:scale-100"
+            className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold rounded-xl shadow-[0_0_40px_-10px_rgba(0,0,0,0.2)] dark:shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:scale-105 hover:shadow-[0_0_60px_-15px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.5)] transition-all duration-300 disabled:opacity-70 disabled:hover:scale-100"
           >
             {isLoggingIn ? (
-              <div className="w-6 h-6 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-white dark:border-slate-900 border-t-transparent rounded-full animate-spin"></div>
             ) : (
               <svg className="w-6 h-6" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

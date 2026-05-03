@@ -99,14 +99,14 @@ export default function ExplorePage() {
   }, [debouncedSearch, category, aiModel, sort, page]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 p-6 md:p-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 p-6 md:p-12 transition-colors">
       <div className="max-w-7xl mx-auto">
 
         {/* HERO HEADER */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/5 pb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-slate-200 dark:border-white/5 pb-8">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2">Explore Marketplace</h1>
-            <p className="text-slate-400">Discover premium AI systems engineered by the community.</p>
+            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">Explore Marketplace</h1>
+            <p className="text-slate-600 dark:text-slate-400">Discover premium AI systems engineered by the community.</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -132,7 +132,7 @@ export default function ExplorePage() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search prompts (e.g. Midjourney, Data, Code...)"
-              className="w-full bg-slate-900 border border-slate-800 rounded-2xl pl-12 pr-4 py-3.5 text-white focus:outline-none focus:border-blue-500 transition-all focus:ring-1 focus:ring-blue-500"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl pl-12 pr-4 py-3.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -141,7 +141,7 @@ export default function ExplorePage() {
             <select
               value={category}
               onChange={(e) => { setCategory(e.target.value); setPage(1); }}
-              className="bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
             >
               <option value="">All Categories</option>
               <option value="Development">Development</option>
@@ -153,7 +153,7 @@ export default function ExplorePage() {
             <select
               value={aiModel}
               onChange={(e) => { setAiModel(e.target.value); setPage(1); }}
-              className="bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
             >
               <option value="">All Models</option>
               <option value="GPT4">GPT-4</option>
@@ -165,7 +165,7 @@ export default function ExplorePage() {
             <select
               value={sort}
               onChange={(e) => { setSort(e.target.value); setPage(1); }}
-              className="bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
             >
               <option value="">Newest First</option>
               <option value="price_asc">Price: Low to High</option>
@@ -179,30 +179,30 @@ export default function ExplorePage() {
           /* SKELETON GRID */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 h-[420px] flex flex-col animate-pulse">
-                <div className="w-full h-48 bg-slate-800/50 rounded-xl mb-5" />
+              <div key={i} className="bg-white/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 h-[420px] flex flex-col animate-pulse">
+                <div className="w-full h-48 bg-slate-200 dark:bg-slate-800/50 rounded-xl mb-5" />
                 <div className="flex gap-2 mb-4">
-                  <div className="h-5 w-20 bg-slate-800/80 rounded" />
-                  <div className="h-5 w-16 bg-slate-800/80 rounded" />
+                  <div className="h-5 w-20 bg-slate-300 dark:bg-slate-800/80 rounded" />
+                  <div className="h-5 w-16 bg-slate-300 dark:bg-slate-800/80 rounded" />
                 </div>
-                <div className="h-6 w-3/4 bg-slate-800/80 rounded mb-3" />
-                <div className="h-4 w-full bg-slate-800/50 rounded mb-2" />
-                <div className="h-4 w-5/6 bg-slate-800/50 rounded mt-auto" />
-                <div className="flex justify-between mt-6 pt-4 border-t border-slate-800/50">
+                <div className="h-6 w-3/4 bg-slate-300 dark:bg-slate-800/80 rounded mb-3" />
+                <div className="h-4 w-full bg-slate-200 dark:bg-slate-800/50 rounded mb-2" />
+                <div className="h-4 w-5/6 bg-slate-200 dark:bg-slate-800/50 rounded mt-auto" />
+                <div className="flex justify-between mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/50">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-slate-800/80" />
-                    <div className="h-4 w-20 bg-slate-800/50 rounded" />
+                    <div className="w-7 h-7 rounded-full bg-slate-300 dark:bg-slate-800/80" />
+                    <div className="h-4 w-20 bg-slate-200 dark:bg-slate-800/50 rounded" />
                   </div>
-                  <div className="h-6 w-16 bg-slate-800/80 rounded" />
+                  <div className="h-6 w-16 bg-slate-300 dark:bg-slate-800/80 rounded" />
                 </div>
               </div>
             ))}
           </div>
         ) : prompts.length === 0 ? (
           /* EMPTY STATE */
-          <div className="text-center py-24 bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
-            <Filter className="w-10 h-10 text-slate-600 mx-auto mb-4" />
-            <p className="text-lg text-slate-300 font-bold mb-1">No prompts found</p>
+          <div className="text-center py-24 bg-slate-100/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
+            <Filter className="w-10 h-10 text-slate-400 dark:text-slate-600 mx-auto mb-4" />
+            <p className="text-lg text-slate-700 dark:text-slate-300 font-bold mb-1">No prompts found</p>
             <p className="text-slate-500">Try adjusting your filters or search terms.</p>
             <button
               onClick={() => { setSearchInput(""); setCategory(""); setAiModel(""); setSort(""); }}
@@ -225,11 +225,11 @@ export default function ExplorePage() {
                   key={prompt.id}
                   variants={itemVariants}
                   onClick={() => router.push(`/explore/${prompt.id}`)}
-                  className="group relative bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md transition-all hover:bg-slate-800/60 hover:border-blue-500/50 hover:shadow-[0_0_30px_-10px_rgba(59,130,246,0.2)] cursor-pointer flex flex-col justify-between min-h-[420px]"
+                  className="group relative bg-white/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 backdrop-blur-md transition-all hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:border-blue-500/50 hover:shadow-[0_0_30px_-10px_rgba(59,130,246,0.2)] cursor-pointer flex flex-col justify-between min-h-[420px]"
                 >
                   <div>
                     {/* THE IMAGE BLOCK */}
-                    <div className="w-full h-48 mb-5 overflow-hidden rounded-xl bg-slate-950/50 border border-slate-800/50 relative">
+                    <div className="w-full h-48 mb-5 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/50 relative">
                       {prompt.imageUrl ? (
                         <img
                           src={prompt.imageUrl}
@@ -237,7 +237,7 @@ export default function ExplorePage() {
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-700 bg-slate-900/50">
+                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-700 bg-slate-100 dark:bg-slate-900/50">
                           <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
                           <span className="text-xs font-semibold uppercase tracking-wider opacity-50">No Preview</span>
                         </div>
@@ -245,22 +245,22 @@ export default function ExplorePage() {
                     </div>
 
                     <div className="flex justify-between items-start mb-4">
-                      <span className="text-[10px] font-bold uppercase px-2.5 py-1 bg-slate-800 text-slate-300 rounded-md border border-slate-700">
+                      <span className="text-[10px] font-bold uppercase px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md border border-slate-200 dark:border-slate-700">
                         {prompt.category}
                       </span>
-                      <span className="text-[10px] font-bold uppercase px-2.5 py-1 bg-slate-950 text-blue-400 rounded-md border border-blue-900/50">
+                      <span className="text-[10px] font-bold uppercase px-2.5 py-1 bg-blue-50 dark:bg-slate-950 text-blue-600 dark:text-blue-400 rounded-md border border-blue-200 dark:border-blue-900/50">
                         {prompt.aiModel}
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">{prompt.title}</h3>
-                    <p className="text-slate-400 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
+                    <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{prompt.title}</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
                       {prompt.description}
                     </p>
                   </div>
 
-                  <div className="flex justify-between items-end pt-4 border-t border-white/5 mt-auto">
+                  <div className="flex justify-between items-end pt-4 border-t border-slate-200 dark:border-white/5 mt-auto">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-300 border border-slate-700">
+                      <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         {prompt.seller?.name ? prompt.seller.name.charAt(0).toUpperCase() : 'U'}
                       </div>
                       <span className="text-xs text-slate-400">{prompt.seller?.name || 'Unknown'}</span>
@@ -273,21 +273,21 @@ export default function ExplorePage() {
 
             {/* PAGINATION CONTROLS */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 border-t border-slate-800 pt-8">
+              <div className="flex items-center justify-center gap-4 border-t border-slate-200 dark:border-slate-800 pt-8">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="p-2 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-2 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent transition-colors"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <span className="text-slate-400 font-medium">
-                  Page <span className="text-white">{page}</span> of <span className="text-white">{totalPages}</span>
+                <span className="text-slate-600 dark:text-slate-400 font-medium">
+                  Page <span className="text-slate-900 dark:text-white">{page}</span> of <span className="text-slate-900 dark:text-white">{totalPages}</span>
                 </span>
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="p-2 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-2 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent transition-colors"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>

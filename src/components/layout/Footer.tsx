@@ -26,7 +26,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-slate-950 border-t border-slate-800/50 relative overflow-hidden">
+    <footer className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800/50 relative overflow-hidden transition-colors duration-300">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
@@ -34,53 +34,53 @@ export default function Footer() {
           
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4 group">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white group-hover:bg-blue-500 transition-colors">PF</div>
-              <span className="text-xl font-bold text-slate-100 tracking-tight">Prompt<span className="text-blue-500">Forge</span></span>
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white group-hover:bg-blue-500 transition-colors shadow-md shadow-blue-500/20">PF</div>
+              <span className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Prompt<span className="text-blue-500">Forge</span></span>
             </Link>
-            <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
               The premium marketplace for next-generation AI prompts. Buy, sell, and discover the exact instructions you need to unlock AI's full potential.
             </p>
             <div className="flex items-center gap-4 text-slate-500">
               {/* ✨ Swap in our new custom SVG components here */}
-              <a href="#" className="hover:text-white transition-colors"><XIcon className="w-4 h-4" /></a>
-              <a href="#" className="hover:text-white transition-colors"><GithubIcon className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-indigo-400 transition-colors"><MessageSquare className="w-5 h-5" /></a>
+              <a href="https://twitter.com/promptforge" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 dark:hover:text-white transition-colors"><XIcon className="w-4 h-4" /></a>
+              <a href="https://github.com/promptforge" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 dark:hover:text-white transition-colors"><GithubIcon className="w-5 h-5" /></a>
+              <a href="https://discord.gg/promptforge" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"><MessageSquare className="w-5 h-5" /></a>
             </div>
           </div>
 
           <div>
-            <h3 className="font-bold text-white mb-4 tracking-wider text-sm uppercase">Platform</h3>
+            <h3 className="font-bold text-slate-900 dark:text-white mb-4 tracking-wider text-sm uppercase">Platform</h3>
             <ul className="space-y-3">
-              <li><Link href="/explore" className="text-slate-400 hover:text-white text-sm transition-colors">Explore Prompts</Link></li>
-              <li><Link href="/categories" className="text-slate-400 hover:text-white text-sm transition-colors">Categories</Link></li>
-              <li><Link href="/register" className="text-slate-400 hover:text-white text-sm transition-colors">Become a Seller</Link></li>
-              <li><Link href="/pricing" className="text-slate-400 hover:text-white text-sm transition-colors">Pricing</Link></li>
+              <li><Link href="/explore" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Explore Prompts</Link></li>
+              <li><Link href="/categories" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Categories</Link></li>
+              <li><Link href="/register" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Become a Seller</Link></li>
+              <li><Link href="/pricing" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Pricing</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-bold text-white mb-4 tracking-wider text-sm uppercase">Resources</h3>
+            <h3 className="font-bold text-slate-900 dark:text-white mb-4 tracking-wider text-sm uppercase">Resources</h3>
             <ul className="space-y-3">
-              <li><Link href="/docs" className="text-slate-400 hover:text-white text-sm transition-colors">Documentation</Link></li>
-              <li><Link href="/blog" className="text-slate-400 hover:text-white text-sm transition-colors">Blog & Guides</Link></li>
-              <li><Link href="/api" className="text-slate-400 hover:text-white text-sm transition-colors">API Reference</Link></li>
-              <li><Link href="/help" className="text-slate-400 hover:text-white text-sm transition-colors">Help Center</Link></li>
+              <li><Link href="/docs" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Documentation</Link></li>
+              <li><Link href="/blog" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Blog & Guides</Link></li>
+              <li><Link href="/api" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">API Reference</Link></li>
+              <li><Link href="/help" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Help Center</Link></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-bold text-white mb-4 tracking-wider text-sm uppercase">Company</h3>
+            <h3 className="font-bold text-slate-900 dark:text-white mb-4 tracking-wider text-sm uppercase">Company</h3>
             <ul className="space-y-3">
-              <li><Link href="/about" className="text-slate-400 hover:text-white text-sm transition-colors">About Us</Link></li>
-              <li><Link href="/privacy" className="text-slate-400 hover:text-white text-sm transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-slate-400 hover:text-white text-sm transition-colors">Terms of Service</Link></li>
-              <li><a href="mailto:support@promptforge.com" className="text-slate-400 hover:text-white text-sm transition-colors flex items-center gap-2"><Mail className="w-4 h-4" /> Contact Us</a></li>
+              <li><Link href="/about" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">About Us</Link></li>
+              <li><Link href="/privacy" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors">Terms of Service</Link></li>
+              <li><a href="mailto:support@promptforge.com" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors flex items-center gap-2"><Mail className="w-4 h-4" /> Contact Us</a></li>
             </ul>
           </div>
 
         </div>
 
-        <div className="pt-8 border-t border-slate-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="pt-8 border-t border-slate-200 dark:border-slate-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-500 text-sm">
             © {new Date().getFullYear()} PromptForge. All rights reserved.
           </p>

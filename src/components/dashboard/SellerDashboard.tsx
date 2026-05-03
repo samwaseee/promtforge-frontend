@@ -30,13 +30,13 @@ export default function SellerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 p-6 md:p-12">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 p-6 md:p-12 transition-colors duration-300">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* HEADER */}
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white mb-2">Seller Overview</h1>
-          <p className="text-slate-400">Track your revenue, sales, and prompt performance.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">Seller Overview</h1>
+          <p className="text-slate-600 dark:text-slate-400">Track your revenue, sales, and prompt performance.</p>
         </div>
 
         {/* KPI CARDS */}
@@ -48,8 +48,8 @@ export default function SellerDashboard() {
         </div>
 
         {/* CHARTS SECTION */}
-        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md">
-          <h3 className="text-lg font-bold text-white mb-6">Revenue Trend (Last 7 Days)</h3>
+        <div className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6">Revenue Trend (Last 7 Days)</h3>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={mockChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -59,7 +59,7 @@ export default function SellerDashboard() {
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" strokeOpacity={0.4} vertical={false} />
                 <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
                 <Tooltip 
@@ -73,17 +73,17 @@ export default function SellerDashboard() {
         </div>
 
         {/* OFFERING PROMPTS TABLE */}
-        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md">
+        <div className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-white">Your Prompts</h3>
-            <button onClick={() => router.push('/create')} className="text-sm bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg font-medium transition-colors">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Your Prompts</h3>
+            <button onClick={() => router.push('/create')} className="text-sm bg-blue-600 hover:bg-blue-700 dark:hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm dark:shadow-none">
               + New Prompt
             </button>
           </div>
           
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="text-slate-400 border-b border-slate-800">
+              <thead className="text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="pb-3 font-medium">Prompt Title</th>
                   <th className="pb-3 font-medium">Category</th>
@@ -92,26 +92,26 @@ export default function SellerDashboard() {
                   <th className="pb-3 font-medium text-right">Sales</th>
                 </tr>
               </thead>
-              <tbody className="text-slate-300 divide-y divide-slate-800/50">
+              <tbody className="text-slate-700 dark:text-slate-300 divide-y divide-slate-200 dark:divide-slate-800/50">
                 {/* Mock Row 1 */}
-                <tr className="hover:bg-slate-800/20 transition-colors">
-                  <td className="py-4 font-medium text-white">Senior React Component Architect</td>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                  <td className="py-4 font-medium text-slate-900 dark:text-white">Senior React Component Architect</td>
                   <td className="py-4">Development</td>
-                  <td className="py-4 font-mono text-emerald-400">$9.99</td>
+                  <td className="py-4 font-mono text-emerald-600 dark:text-emerald-400">$9.99</td>
                   <td className="py-4">
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                       APPROVED
                     </span>
                   </td>
                   <td className="py-4 text-right">42</td>
                 </tr>
                 {/* Mock Row 2 */}
-                <tr className="hover:bg-slate-800/20 transition-colors">
-                  <td className="py-4 font-medium text-white">Advanced SEO Blog Generator</td>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                  <td className="py-4 font-medium text-slate-900 dark:text-white">Advanced SEO Blog Generator</td>
                   <td className="py-4">Copywriting</td>
-                  <td className="py-4 font-mono text-emerald-400">$4.99</td>
+                  <td className="py-4 font-mono text-emerald-600 dark:text-emerald-400">$4.99</td>
                   <td className="py-4">
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
                       PENDING
                     </span>
                   </td>
@@ -130,20 +130,20 @@ export default function SellerDashboard() {
 // Mini component for the top KPI cards
 function StatCard({ icon, title, value, trend, alert }: any) {
   return (
-    <motion.div whileHover={{ y: -2 }} className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl backdrop-blur-md">
+    <motion.div whileHover={{ y: -2 }} className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-3 rounded-xl ${alert ? 'bg-amber-500/10 text-amber-500' : 'bg-blue-500/10 text-blue-500'}`}>
+        <div className={`p-3 rounded-xl transition-colors ${alert ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500' : 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-500'}`}>
           {icon}
         </div>
         {trend && (
-          <span className="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-lg">
+          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-400/10 px-2 py-1 rounded-lg transition-colors">
             {trend}
           </span>
         )}
       </div>
       <div>
-        <p className="text-slate-400 text-sm font-medium mb-1">{title}</p>
-        <h4 className="text-2xl font-black text-white">{value}</h4>
+        <p className="text-slate-600 dark:text-slate-400 text-sm font-medium mb-1">{title}</p>
+        <h4 className="text-2xl font-black text-slate-900 dark:text-white">{value}</h4>
       </div>
     </motion.div>
   );

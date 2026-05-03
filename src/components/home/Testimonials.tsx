@@ -11,7 +11,7 @@ const TypewriterText = ({ text, isVisible }: { text: string; isVisible: boolean 
     return (
         <motion.p
             key={isVisible ? "visible" : "hidden"}
-            className="text-slate-300 mb-8 italic leading-relaxed text-sm h-24" // h-24 ensures layout stability
+            className="text-slate-700 dark:text-slate-300 mb-8 italic leading-relaxed text-sm h-24" // h-24 ensures layout stability
         >
             {isVisible ? (
                 text.split("").map((char, i) => (
@@ -45,7 +45,7 @@ const TestimonialCard = ({ t }: { t: any }) => {
 
             // Hover effects
             whileHover={{ y: -4, borderColor: "rgba(59, 130, 246, 0.3)" }}
-            className="w-[380px] shrink-0 bg-slate-900/40 border border-slate-800 p-8 rounded-2xl shadow-lg flex flex-col justify-between transition-colors duration-300"
+            className="w-[380px] shrink-0 bg-white/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 p-8 rounded-2xl shadow-lg flex flex-col justify-between transition-colors duration-300"
         >
             <div>
                 <div className="flex gap-1 mb-6">
@@ -59,14 +59,14 @@ const TestimonialCard = ({ t }: { t: any }) => {
                 <TypewriterText text={`"${t.comment}"`} isVisible={isVisible} />
             </div>
 
-            <div className="flex items-center gap-3 border-t border-slate-800/50 pt-4 mt-auto">
+            <div className="flex items-center gap-3 border-t border-slate-200 dark:border-slate-800/50 pt-4 mt-auto">
                 {t.reviewer.avatar ? (
-                    <img src={t.reviewer.avatar} alt="avatar" className="w-9 h-9 rounded-full bg-slate-800" />
+                    <img src={t.reviewer.avatar} alt="avatar" className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800" />
                 ) : (
-                    <UserCircle className="w-9 h-9 text-slate-600" />
+                    <UserCircle className="w-9 h-9 text-slate-400 dark:text-slate-600" />
                 )}
                 <div>
-                    <p className="font-medium text-white text-sm">{t.reviewer.name}</p>
+                    <p className="font-medium text-slate-900 dark:text-white text-sm">{t.reviewer.name}</p>
                     <p className="text-xs text-slate-500 font-medium truncate max-w-[200px]">
                         Purchased: {t.prompt.title}
                     </p>
@@ -97,14 +97,15 @@ export default function Testimonials() {
     const doubledTestimonials = [...testimonials, ...testimonials];
 
     return (
-        <section className="py-24 bg-slate-950 w-full overflow-x-hidden relative border-y border-slate-900">
+        <section className="py-24 bg-slate-50 dark:bg-slate-950 w-full overflow-x-hidden relative border-y border-slate-200 dark:border-slate-900 transition-colors">
             {/* Background Atmosphere */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.08]">
-                <div className="absolute inset-0" style={{ backgroundImage: `linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px)`, backgroundSize: "64px 64px" }} />
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-50 dark:opacity-[0.08]">
+                <div className="absolute inset-0 block dark:hidden" style={{ backgroundImage: `linear-gradient(#cbd5e1 1px, transparent 1px), linear-gradient(90deg, #cbd5e1 1px, transparent 1px)`, backgroundSize: "64px 64px" }} />
+                <div className="absolute inset-0 hidden dark:block" style={{ backgroundImage: `linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px)`, backgroundSize: "64px 64px" }} />
             </div>
 
             <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 mb-16 text-center">
-                <h2 className="text-3xl font-semibold text-white">Trusted by Professionals</h2>
+                <h2 className="text-3xl font-semibold text-slate-900 dark:text-white">Trusted by Professionals</h2>
             </div>
 
             <div
@@ -112,8 +113,8 @@ export default function Testimonials() {
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                <div className="absolute left-0 w-32 h-full bg-gradient-to-r from-slate-950 to-transparent z-30 pointer-events-none" />
-                <div className="absolute right-0 w-32 h-full bg-gradient-to-l from-slate-950 to-transparent z-30 pointer-events-none" />
+                <div className="absolute left-0 w-32 h-full bg-gradient-to-r from-slate-50 dark:from-slate-950 to-transparent z-30 pointer-events-none" />
+                <div className="absolute right-0 w-32 h-full bg-gradient-to-l from-slate-50 dark:from-slate-950 to-transparent z-30 pointer-events-none" />
 
                 <motion.div
                     className="flex gap-6 px-3 w-max"

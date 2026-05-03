@@ -56,7 +56,7 @@ export default function BottomCTA() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative overflow-hidden bg-slate-900/40 border border-slate-800 backdrop-blur-xl rounded-[2.5rem] px-8 py-20 md:px-16 text-center shadow-2xl"
+          className="relative overflow-hidden bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 backdrop-blur-xl rounded-[2.5rem] px-8 py-20 md:px-16 text-center shadow-2xl"
         >
           <div className="absolute inset-0 pointer-events-none">
             {/* Liquid glass animated blobs */}
@@ -81,10 +81,10 @@ export default function BottomCTA() {
           </div>
           
           <div className="relative z-10 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tight">
               Ready to forge better outputs?
             </h2>
-            <p className="text-lg md:text-xl text-slate-300 mb-10">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-10">
               Whether you want to supercharge your workflow or monetize your prompt engineering skills, PromptForge is your hub.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -97,7 +97,7 @@ export default function BottomCTA() {
               </Link>
               <Link 
                 href="/register" 
-                className="w-full sm:w-auto px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border border-slate-700 hover:border-slate-600 transition-all text-center"
+                className="w-full sm:w-auto px-8 py-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold rounded-xl border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 transition-all text-center"
               >
                 Become a Seller
               </Link>
@@ -111,13 +111,13 @@ export default function BottomCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="relative overflow-hidden bg-slate-900/40 border border-slate-800 rounded-[2.5rem] px-8 py-10 md:px-16 flex flex-col lg:flex-row items-center justify-between backdrop-blur-md shadow-xl"
+          className="relative overflow-hidden bg-white/60 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] px-8 py-10 md:px-16 flex flex-col lg:flex-row items-center justify-between backdrop-blur-md shadow-xl"
         >
           <div className="relative z-10 lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0">
-            <h3 className="text-2xl font-bold text-white mb-2">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
               Stay in the loop
             </h3>
-            <p className="text-slate-400">
+            <p className="text-slate-600 dark:text-slate-400">
               Subscribe to our newsletter for exclusive prompts, AI trends, and platform updates. No spam, ever.
             </p>
           </div>
@@ -133,7 +133,7 @@ export default function BottomCTA() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={status === "loading"}
-                    className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-slate-950/50 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all disabled:opacity-50"
+                    className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white dark:bg-slate-950/50 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all disabled:opacity-50"
                   />
                 </div>
                 <button

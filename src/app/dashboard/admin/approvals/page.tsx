@@ -1,37 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, XCircle, ExternalLink, AlertCircle } from "lucide-react";
-import { button } from "framer-motion/client";
-
-// Mock Data - In reality, fetch from GET /api/admin/pending-prompts
-const mockPending = [
-  {
-    id: "1",
-    title: "Advanced SEO Blog Generator",
-    seller: "Alex W.",
-    category: "Copywriting",
-    price: 4.99,
-    submittedAt: "2 hours ago",
-  },
-  {
-    id: "2",
-    title: "SQL Schema Architect",
-    seller: "Sarah J.",
-    category: "Development",
-    price: 12.99,
-    submittedAt: "5 hours ago",
-  }
-];
+import { CheckCircle, XCircle, ExternalLink, AlertCircle, Loader2 } from "lucide-react";
+import { apiClient } from "@/lib/apiClient"; // ✨ Import your apiClient
 
 export default function ApprovalQueuePage() {
-  const [pending, setPending] = useState(mockPending);
+  const [pending, setPending] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const handleAction = (id: string, action: 'approve' | 'reject') => {
-    // In reality: await apiClient.post(`/api/admin/prompts/${id}/${action}`)
-    setPending(pending.filter(p => p.id !== id));
+  // ✨ 1. Fetch real data on component mount
+  useEffect(() => {
+    const fetchPendingPrompts = async () => {
+      try {
+        // Adjust this endpoint if your backend route is named differently!
+        const data = await apiClient.get('/api/admin/pending-prompts', true);
+        setPending(data);
+      } catch (err: any) {
+        console.error("Error fetching prompts:", err);
+        setError("Failed to load pending prompts. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPendingPrompts();
+  }, []);
+
+  // ✨ 2. Wire up the actual API call for approve/reject
+  const handleAction = async (id: string, action: 'approve' | 'reject') => {
+    try {
+      // Optimistically remove it from the UI immediately for a snappy feel
+      setPending((prev) => prev.filter(p => p.id !== id));
+      
+      // Tell the backend to update the database
+      await apiClient.post(`/api/admin/prompts/${id}/${action}`, {}, true);
+    } catch (err) {
+      console.error(`Failed to ${action} prompt:`, err);
+      alert(`Failed to ${action} prompt. Please refresh and try again.`);
+      // If it fails, you might want to fetch the list again to restore the UI
+    }
   };
+
+  // Helper to safely format dates from the database
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "Unknown date";
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-blue-500">
+        <Loader2 className="w-8 h-8 animate-spin mb-4" />
+        <p className="text-slate-400 font-medium animate-pulse">Loading pending prompts...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-12 max-w-6xl mx-auto">
@@ -40,7 +66,14 @@ export default function ApprovalQueuePage() {
         <p className="text-slate-400">Review and approve new prompts before they hit the marketplace.</p>
       </div>
 
-      {pending.length === 0 ? (
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {!error && pending.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 border border-dashed border-slate-800 rounded-2xl bg-slate-900/30 text-slate-500">
           <CheckCircle className="w-12 h-12 mb-4 text-slate-700" />
           <p>The queue is empty. Great job!</p>
@@ -70,10 +103,13 @@ export default function ApprovalQueuePage() {
                       {item.title}
                       <AlertCircle className="w-4 h-4 text-amber-500" />
                     </div>
-                    <div className="text-xs text-slate-500">By {item.seller} • Submitted {item.submittedAt}</div>
+                    {/* Maps to how Prisma typically returns relations (item.seller.name) */}
+                    <div className="text-xs text-slate-500">
+                      By {item.seller?.name || "Unknown"} • Submitted {formatDate(item.createdAt || item.submittedAt)}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-slate-300">{item.category}</td>
-                  <td className="px-6 py-4 font-mono text-emerald-400">${item.price.toFixed(2)}</td>
+                  <td className="px-6 py-4 font-mono text-emerald-400">${Number(item.price).toFixed(2)}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-colors" title="Review Content">

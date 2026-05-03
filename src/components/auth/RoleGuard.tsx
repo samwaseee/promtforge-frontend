@@ -6,28 +6,39 @@ import { Loader2 } from "lucide-react";
 
 export default function RoleGuard({ 
   children, 
-  allowedRole 
+  allowedRoles // ✨ CHANGED: Now accepts an array of roles
 }: { 
   children: React.ReactNode; 
-  allowedRole: "ADMIN" | "SELLER";
+  allowedRoles: ("ADMIN" | "SELLER")[]; // ✨ Array type
 }) {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // We already know they are logged in because DashboardLayout checked,
-    // so we just need to verify their specific role for this page.
     const userStr = localStorage.getItem("promptforge_user");
+    
     if (userStr) {
       const user = JSON.parse(userStr);
-      if (user.role === allowedRole) {
+      
+      // ✨ THE FIX: Check if the user's role exists inside the allowed array
+      if (allowedRoles.includes(user.role)) {
         setIsAuthorized(true);
       } else {
         // Snooping detected. Send them to their respective home.
-        router.push(user.role === "ADMIN" ? "/dashboard" : "/dashboard/inventory");
+        if (user.role === "ADMIN") {
+          router.push("/dashboard");
+        } else if (user.role === "SELLER") {
+          router.push("/dashboard/inventory");
+        } else {
+          // Absolute failsafe: Kick standard BUYERs back to the public store
+          router.push("/explore"); 
+        }
       }
+    } else {
+      // Failsafe: No user found at all
+      router.push("/login");
     }
-  }, [router, allowedRole]);
+  }, [router, allowedRoles]);
 
   if (!isAuthorized) {
     return (

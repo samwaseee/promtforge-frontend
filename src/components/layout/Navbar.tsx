@@ -12,7 +12,7 @@ import { apiClient } from "@/lib/apiClient";
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout, isLoading } = useAuth();
-  
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function Navbar() {
 
   const { cartItems, removeFromCart, cartTotal } = useCart();
 
-// ✨ Helper function to check if the current route matches the link
+  // ✨ Helper function to check if the current route matches the link
   const isActive = (path: string) => {
     if (path === "/") return pathname === "/";
     return pathname.startsWith(path);
@@ -32,17 +32,15 @@ export default function Navbar() {
   // ✨ Helper functions for glowing active states AND animated hover lines
   const desktopLinkClass = (path: string) => `relative pb-1 text-sm font-semibold tracking-wide transition-all duration-300 
     after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:bg-blue-400 after:transition-all after:duration-300
-    ${
-    isActive(path) 
+    ${isActive(path)
       ? "text-blue-400 [text-shadow:_0_0_15px_rgba(96,165,250,0.6)] after:w-full" // Active: Text glows, line is full width
       : "text-slate-300 hover:text-white after:w-0 hover:after:w-full"            // Inactive: Line expands on hover
-  }`;
+    }`;
 
-  const mobileLinkClass = (path: string) => `block text-lg font-semibold transition-all duration-300 ${
-    isActive(path) 
-      ? "text-blue-400 [text-shadow:_0_0_15px_rgba(96,165,250,0.6)]" // The Blue Glow
-      : "text-slate-300 hover:text-white"
-  }`;
+  const mobileLinkClass = (path: string) => `block text-lg font-semibold transition-all duration-300 ${isActive(path)
+    ? "text-blue-400 [text-shadow:_0_0_15px_rgba(96,165,250,0.6)]" // The Blue Glow
+    : "text-slate-300 hover:text-white"
+    }`;
 
   const handleCartCheckout = async () => {
     if (cartItems.length === 0 || !user) return;
@@ -96,7 +94,7 @@ export default function Navbar() {
       className="fixed top-0 w-full z-50 bg-slate-950/70 backdrop-blur-xl border-b border-white/5"
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        
+
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white group-hover:bg-blue-500 transition-all shadow-[0_0_15px_-3px_rgba(37,99,235,0.4)]">PF</div>
@@ -114,9 +112,9 @@ export default function Navbar() {
         {/* Actions Container */}
         <div className="flex items-center gap-3 md:gap-6">
           {isLoading ? (
-             <div className="w-9 h-9 rounded-full border-2 border-slate-700 flex items-center justify-center">
-               <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-             </div>
+            <div className="w-9 h-9 rounded-full border-2 border-slate-700 flex items-center justify-center">
+              <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+            </div>
           ) : user ? (
             <>
               {/* Desktop-only Library Link */}
@@ -125,7 +123,7 @@ export default function Navbar() {
                   My Library
                 </Link>
               )}
-              
+
               {/* Desktop-only Dashboard Link */}
               {user.role !== "BUYER" ? (
                 <Link href="/dashboard" className={`hidden md:flex items-center gap-1.5 ${desktopLinkClass("/dashboard")}`}>
@@ -144,10 +142,10 @@ export default function Navbar() {
                   </button>
                   <AnimatePresence>
                     {isCartOpen && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }} 
-                        animate={{ opacity: 1, y: 0, scale: 1 }} 
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }} 
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         className="absolute right-0 top-12 w-[calc(100vw-2rem)] max-w-[320px] md:w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden py-2 cursor-default z-50"
                       >
                         <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
@@ -199,7 +197,11 @@ export default function Navbar() {
               <div className="hidden md:block relative" ref={dropdownRef}>
                 <button onClick={() => { setIsDropdownOpen(!isDropdownOpen); setIsCartOpen(false); }} className={`flex items-center gap-2 hover:opacity-80 transition-all ring-2 ring-transparent hover:ring-blue-500/50 rounded-full ${isActive("/profile") ? "ring-blue-500/80 shadow-[0_0_15px_rgba(96,165,250,0.5)]" : ""}`}>
                   {user.avatar ? (
-                    <img src={user.avatar} alt="Profile" className="w-9 h-9 rounded-full border-2 border-slate-700 object-cover" />
+                    <img
+                      src={user.avatar}
+                      alt="Profile"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=User&background=0D1424&color=3B82F6"; }} className="w-9 h-9 rounded-full border-2 border-slate-700 object-cover" />
                   ) : (
                     <div className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center border-2 border-slate-700 text-slate-400"><User className="w-4 h-4" /></div>
                   )}
@@ -232,9 +234,9 @@ export default function Navbar() {
       {/* FULL MOBILE MENU DROPDOWN */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }} 
-            animate={{ opacity: 1, height: "auto" }} 
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden bg-slate-950 border-b border-white/10 px-6 py-4 space-y-4 overflow-hidden absolute top-16 left-0 w-full shadow-2xl"
           >
@@ -242,7 +244,11 @@ export default function Navbar() {
             {user && (
               <div className="flex items-center gap-4 pb-4 border-b border-slate-800/50 mb-4">
                 {user.avatar ? (
-                  <img src={user.avatar} alt="Profile" className={`w-12 h-12 rounded-full border-2 object-cover ${isActive("/profile") ? "border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.5)]" : "border-slate-700"}`} />
+                  <img
+                    src={user.avatar}
+                    alt="Profile"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=User&background=0D1424&color=3B82F6"; }} className={`w-12 h-12 rounded-full border-2 object-cover ${isActive("/profile") ? "border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.5)]" : "border-slate-700"}`} />
                 ) : (
                   <div className={`w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border-2 text-slate-400 ${isActive("/profile") ? "border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.5)] text-blue-400" : "border-slate-700"}`}>
                     <User className="w-6 h-6" />
@@ -263,13 +269,13 @@ export default function Navbar() {
             <Link href="/about" className={mobileLinkClass("/about")}>About</Link>
             <Link href="/contact" className={mobileLinkClass("/contact")}>Contact</Link>
             <Link href="/faq" className={mobileLinkClass("/faq")}>FAQ</Link>
-            
+
             <hr className="border-white/10 mt-2 mb-2" />
-            
+
             {user ? (
-               <button onClick={logout} className="block w-full text-left text-lg font-bold text-red-400 py-2 hover:text-red-300 transition-colors">Logout</button>
+              <button onClick={logout} className="block w-full text-left text-lg font-bold text-red-400 py-2 hover:text-red-300 transition-colors">Logout</button>
             ) : (
-               <Link href="/login" className="block text-lg font-bold text-blue-500 py-2 hover:text-blue-400 transition-colors [text-shadow:_0_0_10px_rgba(59,130,246,0.4)]">Log In / Sign Up</Link>
+              <Link href="/login" className="block text-lg font-bold text-blue-500 py-2 hover:text-blue-400 transition-colors [text-shadow:_0_0_10px_rgba(59,130,246,0.4)]">Log In / Sign Up</Link>
             )}
           </motion.div>
         )}

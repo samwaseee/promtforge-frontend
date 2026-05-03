@@ -3,7 +3,7 @@ import Sidebar from "@/components/layout/Sidebar"; // Your single dynamic sideba
 
 export default function SellerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <RoleGuard allowedRole="SELLER">
+    <RoleGuard allowedRoles={["SELLER"]}>
       <div className="flex min-h-screen bg-slate-950">
         <main className="flex-1 pl-16 transition-all duration-300">
           {children}

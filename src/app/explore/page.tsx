@@ -108,12 +108,15 @@ export default function ExplorePage() {
           </div>
           
           <div className="flex items-center gap-3">
-             <button
-              onClick={() => router.push("/create")}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)]"
-            >
-              <Plus className="w-5 h-5" /> Sell Prompt
-            </button>
+            {/* ✨ CONDITION ADDED: Only show if user exists AND is not a BUYER */}
+            {user && user.role !== "BUYER" && (
+              <button
+                onClick={() => router.push("/create")}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)]"
+              >
+                <Plus className="w-5 h-5" /> Sell Prompt
+              </button>
+            )}
           </div>
         </div>
 

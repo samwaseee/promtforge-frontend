@@ -21,11 +21,11 @@ interface Prompt {
 export default function ExplorePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  
+
   // --- DATA STATE ---
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // --- FILTER & PAGINATION STATE ---
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -49,9 +49,11 @@ export default function ExplorePage() {
   // --- INITIALIZE USER ---
   useEffect(() => {
     const storedUser = localStorage.getItem("promptforge_user");
-    if (!storedUser) { router.push("/"); return; }
-    setUser(JSON.parse(storedUser));
-  }, [router]);
+    // If a user exists, set it. If not, do nothing (don't redirect!)
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   // --- DEBOUNCE SEARCH ---
   // Wait 500ms after the user stops typing to trigger a search
@@ -63,7 +65,7 @@ export default function ExplorePage() {
     return () => clearTimeout(handler);
   }, [searchInput]);
 
-// --- FETCH DATA ---
+  // --- FETCH DATA ---
   useEffect(() => {
     const fetchPrompts = async () => {
       setIsLoading(true);
@@ -73,7 +75,7 @@ export default function ExplorePage() {
           page: page.toString(),
           limit: "6", // Fetch 6 items per page
         });
-        
+
         if (debouncedSearch) params.append("search", debouncedSearch);
         if (category) params.append("category", category);
         if (aiModel) params.append("aiModel", aiModel);
@@ -82,31 +84,31 @@ export default function ExplorePage() {
         // ✨ Use apiClient instead of native fetch!
         // The 'false' indicates this is a public route (no token required)
         const data = await apiClient.get(`/api/prompts?${params.toString()}`, false);
-        
+
         setPrompts(data.prompts || []);
         setTotalPages(data.totalPages || 1);
-        
-      } catch (error) { 
-        console.error("Failed to fetch prompts:", error); 
-      } finally { 
-        setIsLoading(false); 
+
+      } catch (error) {
+        console.error("Failed to fetch prompts:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
-    
+
     fetchPrompts();
   }, [debouncedSearch, category, aiModel, sort, page]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-50 p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
-        
+
         {/* HERO HEADER */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-white/5 pb-8">
           <div>
             <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2">Explore Marketplace</h1>
             <p className="text-slate-400">Discover premium AI systems engineered by the community.</p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             {/* ✨ CONDITION ADDED: Only show if user exists AND is not a BUYER */}
             {user && user.role !== "BUYER" && (
@@ -125,8 +127,8 @@ export default function ExplorePage() {
           {/* Search Bar */}
           <div className="relative flex-1">
             <Search className="absolute left-4 top-3.5 w-5 h-5 text-slate-500" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search prompts (e.g. Midjourney, Data, Code...)"
@@ -136,8 +138,8 @@ export default function ExplorePage() {
 
           {/* Dropdown Filters */}
           <div className="flex gap-4 flex-wrap">
-            <select 
-              value={category} 
+            <select
+              value={category}
               onChange={(e) => { setCategory(e.target.value); setPage(1); }}
               className="bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
             >
@@ -148,8 +150,8 @@ export default function ExplorePage() {
               <option value="Design">Design</option>
             </select>
 
-            <select 
-              value={aiModel} 
+            <select
+              value={aiModel}
               onChange={(e) => { setAiModel(e.target.value); setPage(1); }}
               className="bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
             >
@@ -160,8 +162,8 @@ export default function ExplorePage() {
               <option value="MIDJOURNEY">Midjourney</option>
             </select>
 
-            <select 
-              value={sort} 
+            <select
+              value={sort}
               onChange={(e) => { setSort(e.target.value); setPage(1); }}
               className="bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none min-w-[140px]"
             >
@@ -202,7 +204,7 @@ export default function ExplorePage() {
             <Filter className="w-10 h-10 text-slate-600 mx-auto mb-4" />
             <p className="text-lg text-slate-300 font-bold mb-1">No prompts found</p>
             <p className="text-slate-500">Try adjusting your filters or search terms.</p>
-            <button 
+            <button
               onClick={() => { setSearchInput(""); setCategory(""); setAiModel(""); setSort(""); }}
               className="mt-6 text-blue-400 hover:text-blue-300 font-medium"
             >
@@ -212,9 +214,9 @@ export default function ExplorePage() {
         ) : (
           /* REAL DATA GRID */
           <>
-            <motion.div 
-              variants={containerVariants} 
-              initial="hidden" 
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
               animate="visible"
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
             >
@@ -229,9 +231,9 @@ export default function ExplorePage() {
                     {/* THE IMAGE BLOCK */}
                     <div className="w-full h-48 mb-5 overflow-hidden rounded-xl bg-slate-950/50 border border-slate-800/50 relative">
                       {prompt.imageUrl ? (
-                        <img 
-                          src={prompt.imageUrl} 
-                          alt={prompt.title} 
+                        <img
+                          src={prompt.imageUrl}
+                          alt={prompt.title}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                       ) : (
@@ -257,7 +259,7 @@ export default function ExplorePage() {
                   </div>
 
                   <div className="flex justify-between items-end pt-4 border-t border-white/5 mt-auto">
-                     <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-300 border border-slate-700">
                         {prompt.seller?.name ? prompt.seller.name.charAt(0).toUpperCase() : 'U'}
                       </div>
@@ -272,7 +274,7 @@ export default function ExplorePage() {
             {/* PAGINATION CONTROLS */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-4 border-t border-slate-800 pt-8">
-                <button 
+                <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
                   className="p-2 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
@@ -282,7 +284,7 @@ export default function ExplorePage() {
                 <span className="text-slate-400 font-medium">
                   Page <span className="text-white">{page}</span> of <span className="text-white">{totalPages}</span>
                 </span>
-                <button 
+                <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
                   className="p-2 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"

@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Bot, Zap, ShieldCheck, Code2, Globe2, ArrowRight, Mail } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import Link from "next/link";
 
 // Mock Data for the Developer / Team Section
@@ -25,11 +26,26 @@ const teamMembers = [
 ];
 
 const stats = [
-  { label: "Active Prompts", value: "10,000+" },
-  { label: "AI Engineers", value: "2,500+" },
-  { label: "Lines of Code", value: "150k+" },
-  { label: "Service Outages", value: "0" },
+  { label: "Active Prompts", num: 10000, suffix: "+" },
+  { label: "AI Engineers", num: 2500, suffix: "+" },
+  { label: "Lines of Code", num: 150, suffix: "k+" },
+  { label: "Service Outages", num: 0, suffix: "" },
 ];
+
+function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest).toLocaleString() + suffix);
+
+  useEffect(() => {
+    if (isInView) {
+      animate(count, value, { duration: 2, ease: "easeOut" });
+    }
+  }, [count, value, isInView]);
+
+  return <motion.span ref={ref}>{rounded}</motion.span>;
+}
 
 export default function AboutPage() {
   return (
@@ -67,7 +83,9 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <div className="text-3xl md:text-4xl font-black text-white mb-2">{stat.value}</div>
+                <div className="text-3xl md:text-4xl font-black text-white mb-2">
+                  <AnimatedCounter value={stat.num} suffix={stat.suffix} />
+                </div>
                 <div className="text-sm font-medium text-slate-500 uppercase tracking-wider">{stat.label}</div>
               </motion.div>
             ))}

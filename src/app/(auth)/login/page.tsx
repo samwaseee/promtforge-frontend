@@ -10,8 +10,8 @@ import {
   GithubAuthProvider, 
   TwitterAuthProvider 
 } from "firebase/auth";
-import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff, User } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
@@ -19,6 +19,12 @@ import { useAuth } from "@/context/AuthContext";
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 const twitterProvider = new TwitterAuthProvider();
+
+const demoCredentials = {
+  buyer: { email: "sam@gmail.com", password: "=5u!-n>k7X5bXftt" },
+  seller: { email: "sami@gmail.com", password: "=5u!-n>k7X5bXft" },
+  admin: { email: "samiur@gmail.com", password: "=5u!-n>k7X5bXft" },
+};
 
 function LoginForm() {
   const { login } = useAuth();
@@ -29,7 +35,9 @@ function LoginForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [errorCode, setErrorCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isDemoPopoverOpen, setIsDemoPopoverOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -44,6 +52,7 @@ function LoginForm() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorCode("");
     setError("");
 
     try {
@@ -58,6 +67,7 @@ function LoginForm() {
   const handleSocialLogin = async (provider: any) => {
     setIsSubmitting(true);
     setError("");
+    setErrorCode("");
 
     try {
       const userCredential = await signInWithPopup(auth, provider);
@@ -65,6 +75,11 @@ function LoginForm() {
     } catch (err: any) {
       handleAuthError(err);
     }
+  };
+
+  const handleDemoLogin = (role: 'buyer' | 'seller' | 'admin') => {
+    setFormData(demoCredentials[role]);
+    setIsDemoPopoverOpen(false);
   };
 
   // ✨ NEW: 3. Extracted Backend Sync Logic (to avoid repeating code)
@@ -96,8 +111,23 @@ function LoginForm() {
       setIsSubmitting(false);
       return; 
     }
-    const message = err.message.replace("Firebase: ", "").replace(/\(auth.*\)\.?/, "");
-    setError(message || "Authentication failed.");
+
+    let friendlyMessage = err.message?.replace("Firebase: ", "").replace(/\(auth.*\)\.?/, "") || "Authentication failed.";
+    
+    if (err.code === 'auth/wrong-password') {
+      friendlyMessage = "Incorrect password. Please try again.";
+    } else if (err.code === 'auth/user-not-found') {
+      friendlyMessage = "No account found with this email.";
+    } else if (err.code === 'auth/invalid-credential') {
+      friendlyMessage = "Incorrect email or password.";
+    } else if (err.code === 'auth/invalid-email') {
+      friendlyMessage = "The email address is badly formatted.";
+    } else if (err.code === 'auth/too-many-requests') {
+      friendlyMessage = "Too many failed login attempts. Please try again later.";
+    }
+
+    setError(friendlyMessage);
+    setErrorCode(err.code || ""); // Store error code for conditional rendering
     setIsSubmitting(false);
   };
 
@@ -116,9 +146,23 @@ function LoginForm() {
         </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg mb-6 text-sm text-center">
-            {error}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg mb-6 text-sm"
+          >
+            <p className="text-center font-medium">{error}</p>
+            {(errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-credential') && (
+              <p className="text-center text-xs mt-2">
+                Having trouble? <Link href="/forgot-password" className="font-bold underline hover:text-red-300">Reset your password</Link>.
+              </p>
+            )}
+            {errorCode === 'auth/user-not-found' && (
+              <p className="text-center text-xs mt-2">
+                No account found. <Link href="/register" className="font-bold underline hover:text-red-300">Create one now</Link>.
+              </p>
+            )}
+          </motion.div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-5">
@@ -219,6 +263,34 @@ function LoginForm() {
               </svg>
             </button>
           </div>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center w-full">
+          <button
+            type="button"
+            onClick={() => setIsDemoPopoverOpen(!isDemoPopoverOpen)}
+            className="w-full py-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/30 font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+          >
+            <User className="w-5 h-5" />
+            Quick Demo Login
+          </button>
+
+          <AnimatePresence>
+            {isDemoPopoverOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="w-full overflow-hidden"
+              >
+                <div className="w-full mt-3 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-10 flex flex-col gap-1">
+                  <button onClick={() => handleDemoLogin('buyer')} className="w-full text-center font-semibold px-4 py-2.5 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors">Login as Buyer</button>
+                  <button onClick={() => handleDemoLogin('seller')} className="w-full text-center font-semibold px-4 py-2.5 rounded-lg text-blue-400 hover:bg-blue-500/10 transition-colors">Login as Seller</button>
+                  <button onClick={() => handleDemoLogin('admin')} className="w-full text-center font-semibold px-4 py-2.5 rounded-lg text-purple-400 hover:bg-purple-500/10 transition-colors">Login as Admin</button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <p className="text-center text-slate-400 text-sm mt-6">

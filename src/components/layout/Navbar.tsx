@@ -106,6 +106,7 @@ export default function Navbar() {
           <Link href="/" className={desktopLinkClass("/")}>Home</Link>
           <Link href="/explore" className={desktopLinkClass("/explore")}>Explore</Link>
           <Link href="/about" className={desktopLinkClass("/about")}>About</Link>
+          <Link href="/faq" className={desktopLinkClass("/faq")}>FAQ</Link>
           <Link href="/contact" className={desktopLinkClass("/contact")}>Contact</Link>
         </div>
 

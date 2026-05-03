@@ -11,7 +11,9 @@ import {
     MessageSquare,
     ArrowLeft,
     UserCircle,
-    ImageIcon
+    ImageIcon,
+    ChevronLeft,
+    ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -31,6 +33,8 @@ export default function PromptDetailsPage() {
     const [prompt, setPrompt] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [relatedPrompts, setRelatedPrompts] = useState<any[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -40,6 +44,20 @@ export default function PromptDetailsPage() {
             try {
                 const data = await apiClient.get(`/api/prompts/${id}`, false);
                 setPrompt(data);
+
+                // Fetch related prompts based on category
+                try {
+                    const params = new URLSearchParams({
+                        category: data.category,
+                        limit: "4",
+                    });
+                    const related = await apiClient.get(`/api/prompts?${params.toString()}`, false);
+                    // Filter out the current prompt from related items
+                    const filtered = related.prompts?.filter((p: any) => p.id !== id) || [];
+                    setRelatedPrompts(filtered.slice(0, 4));
+                } catch (relatedError) {
+                    console.error("Failed to fetch related prompts:", relatedError);
+                }
             } catch (err: any) {
                 setError(err.message || "Failed to load prompt details.");
             } finally {
@@ -122,6 +140,14 @@ export default function PromptDetailsPage() {
     const exampleOutput = prompt.exampleOutput || "// No example output provided by the seller.";
     const reviewsCount = prompt.reviews?.length || 0;
 
+    // Generate gallery images (main image + 3 variations)
+    const galleryImages = [
+        prompt.imageUrl,
+        `https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
+        `https://images.unsplash.com/photo-1674027444485-cec3da58eef4?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
+        `https://images.unsplash.com/photo-1761740533449-b8d4385e60b0?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`,
+    ].filter(Boolean);
+
     const rating = reviewsCount > 0
         ? (prompt.reviews.reduce((acc: number, curr: any) => acc + curr.rating, 0) / reviewsCount).toFixed(1)
         : "New";
@@ -172,25 +198,75 @@ export default function PromptDetailsPage() {
                             </div>
                         </motion.div>
 
-                        {/* HERO IMAGE SECTION */}
+                        {/* HERO IMAGE SECTION WITH GALLERY */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.05 }}
+                            className="space-y-4"
                         >
-                            {prompt.imageUrl ? (
-                                <div className="relative w-full aspect-[21/9] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl group">
+                            {/* Main Image with Navigation */}
+                            <div className="relative w-full aspect-[21/9] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl group">
+                                {galleryImages[selectedImageIndex] ? (
                                     <img
-                                        src={prompt.imageUrl}
-                                        alt={prompt.title}
+                                        src={galleryImages[selectedImageIndex]}
+                                        alt={`${prompt.title} - Image ${selectedImageIndex + 1}`}
                                         className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700 ease-in-out"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
-                                </div>
-                            ) : (
-                                <div className="w-full aspect-[21/9] rounded-3xl bg-slate-900/40 border border-slate-800 border-dashed flex flex-col items-center justify-center backdrop-blur-md">
-                                    <ImageIcon className="w-8 h-8 text-slate-600 mb-2" />
-                                    <span className="text-sm font-medium text-slate-500">No preview image provided</span>
+                                ) : (
+                                    <div className="w-full h-full bg-slate-900/40 flex flex-col items-center justify-center">
+                                        <ImageIcon className="w-8 h-8 text-slate-600 mb-2" />
+                                        <span className="text-sm font-medium text-slate-500">No preview image</span>
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                                
+                                {/* Navigation Arrows */}
+                                {galleryImages.length > 1 && (
+                                    <>
+                                        <button
+                                            onClick={() => setSelectedImageIndex((i) => (i - 1 + galleryImages.length) % galleryImages.length)}
+                                            className="absolute left-4 top-1/2 -translate-y-1/2 bg-slate-950/60 hover:bg-slate-950/90 border border-slate-700 rounded-full p-2 transition-all z-10"
+                                        >
+                                            <ChevronLeft className="w-6 h-6 text-white" />
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedImageIndex((i) => (i + 1) % galleryImages.length)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 bg-slate-950/60 hover:bg-slate-950/90 border border-slate-700 rounded-full p-2 transition-all z-10"
+                                        >
+                                            <ChevronRight className="w-6 h-6 text-white" />
+                                        </button>
+
+                                        {/* Image Counter */}
+                                        <div className="absolute bottom-4 right-4 bg-slate-950/60 backdrop-blur-md border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-300">
+                                            {selectedImageIndex + 1} / {galleryImages.length}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Thumbnail Gallery */}
+                            {galleryImages.length > 1 && (
+                                <div className="flex gap-3 overflow-x-auto pb-2">
+                                    {galleryImages.map((img, idx) => (
+                                        <motion.button
+                                            key={idx}
+                                            onClick={() => setSelectedImageIndex(idx)}
+                                            whileHover={{ scale: 1.05 }}
+                                            className={`relative shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                                                idx === selectedImageIndex ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'border-slate-700 hover:border-slate-600'
+                                            }`}
+                                        >
+                                            <img
+                                                src={img}
+                                                alt={`Thumbnail ${idx + 1}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            {idx === selectedImageIndex && (
+                                                <div className="absolute inset-0 bg-blue-500/10 pointer-events-none" />
+                                            )}
+                                        </motion.button>
+                                    ))}
                                 </div>
                             )}
                         </motion.div>
@@ -277,6 +353,64 @@ export default function PromptDetailsPage() {
                                 </div>
                             )}
                         </motion.div>
+
+                        {/* RELATED ITEMS SECTION */}
+                        {relatedPrompts.length > 0 && (
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+                                <h2 className="text-2xl font-bold text-white mb-6">Similar Prompts</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {relatedPrompts.map((relatedPrompt) => (
+                                        <motion.div
+                                            key={relatedPrompt.id}
+                                            whileHover={{ y: -4 }}
+                                            onClick={() => router.push(`/explore/${relatedPrompt.id}`)}
+                                            className="group relative bg-slate-900/40 border border-slate-800 rounded-2xl p-5 backdrop-blur-md transition-all hover:bg-slate-800/60 hover:border-blue-500/50 hover:shadow-[0_0_30px_-10px_rgba(59,130,246,0.2)] cursor-pointer"
+                                        >
+                                            {/* Image */}
+                                            <div className="w-full h-32 mb-4 overflow-hidden rounded-lg bg-slate-950/50 border border-slate-800/50 relative">
+                                                {relatedPrompt.imageUrl ? (
+                                                    <img
+                                                        src={relatedPrompt.imageUrl}
+                                                        alt={relatedPrompt.title}
+                                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-700 bg-slate-900/50">
+                                                        <ImageIcon className="w-6 h-6 mb-1 opacity-50" />
+                                                        <span className="text-[10px] font-semibold uppercase tracking-wider opacity-50">No Preview</span>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Info */}
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div>
+                                                    <span className="text-[9px] font-bold uppercase px-2 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700">
+                                                        {relatedPrompt.category}
+                                                    </span>
+                                                </div>
+                                                <span className="text-[9px] font-bold uppercase px-2 py-0.5 bg-slate-950 text-blue-400 rounded border border-blue-900/50">
+                                                    {relatedPrompt.aiModel}
+                                                </span>
+                                            </div>
+
+                                            <h3 className="text-sm font-bold mb-1 line-clamp-2 group-hover:text-blue-400 transition-colors">
+                                                {relatedPrompt.title}
+                                            </h3>
+                                            <p className="text-xs text-slate-400 line-clamp-2 mb-4">
+                                                {relatedPrompt.description}
+                                            </p>
+
+                                            {/* Footer */}
+                                            <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                                                <span className="text-xs text-slate-500">{relatedPrompt.seller?.name || 'Unknown'}</span>
+                                                <span className="text-sm font-bold text-emerald-400">${relatedPrompt.price.toFixed(2)}</span>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
 
                     </div>
 

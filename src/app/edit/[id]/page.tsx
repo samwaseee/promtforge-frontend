@@ -28,7 +28,7 @@ export default function EditPromptPage() {
   useEffect(() => {
     const fetchPrompt = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${API_URL}/api/prompts/${params.id}`);
         if (!res.ok) throw new Error("Failed to load prompt data");
         
@@ -93,7 +93,7 @@ export default function EditPromptPage() {
 
     try {
       const token = localStorage.getItem("promptforge_token");
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
       
       const response = await fetch(`${API_URL}/api/prompts/${params.id}`, {
         method: "PATCH",

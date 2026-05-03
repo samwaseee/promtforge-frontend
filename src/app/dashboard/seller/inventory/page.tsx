@@ -14,7 +14,7 @@ export default function SellerInventoryPage() {
     const fetchPrompts = async () => {
       try {
         const token = localStorage.getItem("promptforge_token");
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
         const res = await fetch(`${API_URL}/api/seller/my-prompts`, {
           headers: { "Authorization": `Bearer ${token}` }

@@ -1,5 +1,5 @@
 // Define the base URL once
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Helper function to build headers automatically
 const getHeaders = (requireAuth = false) => {

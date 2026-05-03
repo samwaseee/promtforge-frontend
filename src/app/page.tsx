@@ -32,7 +32,7 @@ export default function Home() {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
       const response = await fetch(`${API_URL}/api/auth/sync`, {
         method: "POST",

@@ -69,7 +69,7 @@ export default function RegisterPage() {
     // Extracted Sync Logic (handles both Email/Password and Social)
     const syncWithBackend = async (firebaseUser: any) => {
         const idToken = await firebaseUser.getIdToken();
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
         const response = await fetch(`${API_URL}/api/auth/sync`, {
             method: "POST",

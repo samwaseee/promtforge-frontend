@@ -30,18 +30,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300`}
+        className={`${geistSans.className} ${geistMono.variable} antialiased bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300`}
       >
         <ThemeProvider>
-        <AuthProvider>
-          <CartProvider>
-          <Navbar />
-          <main className="pt-16"> {/* Add padding top so the fixed navbar doesn't cover content */}
-            {children}
-          </main>
-          <Footer />
-          </CartProvider>
-        </AuthProvider>
+          <AuthProvider>
+            <CartProvider>
+              <Navbar />
+              <main className="pt-16"> {/* Add padding top so the fixed navbar doesn't cover content */}
+                {children}
+              </main>
+              <Footer />
+            </CartProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
